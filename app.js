@@ -1,12 +1,13 @@
-// Konfigurasi Firebase Realtime Database
+ // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "PASTE_API_KEY_LU",
-  authDomain: "PASTE_AUTH_DOMAIN_LU",
-  databaseURL: "PASTE_DATABASE_URL_LU",
-  projectId: "PASTE_PROJECT_ID_LU",
-  storageBucket: "PASTE_STORAGE_BUCKET_LU",
-  messagingSenderId: "PASTE_SENDER_ID_LU",
-  appId: "PASTE_APP_ID_LU"
+  apiKey: "AIzaSyAvgnrhkSNhtCvh28-ebBrrxG8Wen7f2AY",
+  authDomain: "wcb-sovereign.firebaseapp.com",
+  databaseURL: "https://wcb-sovereign-default-rtdb.firebaseio.com",
+  projectId: "wcb-sovereign",
+  storageBucket: "wcb-sovereign.firebasestorage.app",
+  messagingSenderId: "278609307748",
+  appId: "1:278609307748:web:cb7be032e60818be765771",
+  measurementId: "G-9XQWJZTZQX"
 };
 
 // Inisialisasi Firebase
