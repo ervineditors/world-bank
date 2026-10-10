@@ -1,13 +1,12 @@
- // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Konfigurasi Firebase Realtime Database
 const firebaseConfig = {
-  apiKey: "AIzaSyAvgnrhkSNhtCvh28-ebBrrxG8Wen7f2AY",
+  apiKey: "PASTE_API_KEY_ASLI_KAMU",
   authDomain: "wcb-sovereign.firebaseapp.com",
   databaseURL: "https://wcb-sovereign-default-rtdb.firebaseio.com",
   projectId: "wcb-sovereign",
-  storageBucket: "wcb-sovereign.firebasestorage.app",
+  storageBucket: "wcb-sovereign.appspot.com",
   messagingSenderId: "278609307748",
-  appId: "1:278609307748:web:cb7be032e60818be765771",
-  measurementId: "G-9XQWJZTZQX"
+  appId: "1:278609307748:web:cb7be032e60818be765771"
 };
 
 // Inisialisasi Firebase
@@ -16,244 +15,280 @@ if (!firebase.apps.length) {
 }
 const db = firebase.database();
 
-// DOM References
-const wcbForm = document.getElementById('wcbForm');
-const countryTableBody = document.getElementById('countryTableBody');
-const auditLog = document.getElementById('auditLog');
-const tableSearch = document.getElementById('tableSearch');
+// PIN Akses Admin
+const ADMIN_PIN = "123456";
 
-// Global Analytics State
-let globalChartLiquidity = null;
-let globalChartStatus = null;
-let currentCountriesData = {};
+let liquidityChartInstance = null;
 
-// Live Clock UTC
-setInterval(() => {
-  const now = new Date();
-  document.getElementById('liveClock').textContent = now.toUTCString().replace('GMT', 'UTC');
-}, 1000);
+// Deteksi halaman saat dimuat
+document.addEventListener('DOMContentLoaded', () => {
+  if (document.getElementById('publicTableBody')) {
+    initPublicPortal();
+  }
+  if (document.getElementById('adminAuthModal')) {
+    initAdminPanel();
+  }
+});
 
-// Log System Function
-function addLog(message, type = 'INFO') {
-  const time = new Date().toLocaleTimeString();
-  const color = type === 'WARN' ? 'text-amber-400' : (type === 'DANGER' ? 'text-red-400' : 'text-cyan-400');
-  
-  const logEntry = document.createElement('p');
-  logEntry.innerHTML = `<span class="text-slate-600">[${time}]</span> <span class="${color}">[${type}]</span> ${message}`;
-  
-  auditLog.prepend(logEntry);
+// ==========================================
+// 1. PORTAL PUBLIK & MEMBER (index.html)
+// ==========================================
+function initPublicPortal() {
+  const regForm = document.getElementById('memberRegisterForm');
+  if (regForm) {
+    regForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const country = document.getElementById('regCountryName').value.trim();
+      const currency = document.getElementById('regCurrency').value.trim();
+      const leader = document.getElementById('regLeader').value.trim();
+      const flag = document.getElementById('regFlag').value.trim();
+
+      const pendingRef = db.ref('pending_members').push();
+      pendingRef.set({
+        country,
+        currency,
+        leader,
+        flag,
+        timestamp: Date.now()
+      }).then(() => {
+        alert(`Pengajuan integrasi untuk negara ${country} berhasil dikirim! Menunggu ACC Pengurus WCB.`);
+        regForm.reset();
+      }).catch(err => alert("Gagal mengirim pengajuan: " + err.message));
+    });
+  }
+
+  db.ref('monetary_data').on('value', (snapshot) => {
+    const data = snapshot.val() || {};
+    updateGlobalMetrics(data);
+    renderPublicTable(data);
+    renderLiquidityChart(data);
+  });
 }
 
-// Initialize Charts
-function initCharts() {
-  const ctxLiquidity = document.getElementById('liquidityChart').getContext('2d');
-  globalChartLiquidity = new Chart(ctxLiquidity, {
+function updateGlobalMetrics(data) {
+  const keys = Object.keys(data);
+  let totalLiquidity = 0;
+  let totalWarehouse = 0;
+  let totalInflation = 0;
+
+  keys.forEach(key => {
+    const item = data[key];
+    totalLiquidity += Number(item.kurs || 0) * Number(item.stock || 0);
+    totalWarehouse += Number(item.stock || 0);
+    totalInflation += Number(item.inflation || 0);
+  });
+
+  const avgInflation = keys.length > 0 ? (totalInflation / keys.length).toFixed(1) : 0;
+
+  document.getElementById('statTotalCountries').textContent = keys.length;
+  document.getElementById('statTotalLiquidity').textContent = totalLiquidity.toLocaleString() + ' EUPH';
+  document.getElementById('statAvgInflation').textContent = avgInflation + '%';
+  document.getElementById('statTotalWarehouse').textContent = totalWarehouse.toLocaleString() + ' Unit';
+}
+
+function renderPublicTable(data) {
+  const tbody = document.getElementById('publicTableBody');
+  tbody.innerHTML = '';
+
+  const keys = Object.keys(data);
+  if (keys.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-500 italic">Belum ada negara anggota yang terverifikasi.</td></tr>';
+    return;
+  }
+
+  keys.forEach(key => {
+    const item = data[key];
+    const statusClass = item.status === 'Frozen' ? 'bg-rose-500/10 text-rose-400 border-rose-500/30' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+    
+    const tr = document.createElement('tr');
+    tr.className = 'hover:bg-slate-800/40 transition';
+    tr.innerHTML = `
+      <td class="py-3 px-3 font-semibold text-white flex items-center gap-2">
+        ${item.flag ? `<img src="${item.flag}" class="w-5 h-4 object-cover rounded shadow">` : '<i class="fa-solid fa-flag text-cyan-400"></i>'}
+        ${item.country}
+      </td>
+      <td class="py-3 px-3 font-mono text-cyan-300">${item.currency}</td>
+      <td class="py-3 px-3 font-mono">${parseFloat(item.kurs).toFixed(2)} EUPH</td>
+      <td class="py-3 px-3 font-mono">${Number(item.stock).toLocaleString()}</td>
+      <td class="py-3 px-3 font-mono text-amber-400">${item.inflation}%</td>
+      <td class="py-3 px-3"><span class="px-2.5 py-1 rounded-full text-xs font-semibold border ${statusClass}">${item.status || 'Active'}</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function renderLiquidityChart(data) {
+  const ctx = document.getElementById('liquidityChart');
+  if (!ctx) return;
+
+  const labels = [];
+  const values = [];
+
+  Object.values(data).forEach(item => {
+    labels.push(item.country);
+    values.push(item.stock);
+  });
+
+  if (liquidityChartInstance) liquidityChartInstance.destroy();
+
+  liquidityChartInstance = new Chart(ctx, {
     type: 'bar',
     data: {
-      labels: [],
+      labels: labels,
       datasets: [{
-        label: 'Kurs EUPH',
-        data: [],
-        backgroundColor: 'rgba(6, 182, 212, 0.4)',
-        borderColor: '#06b6d4',
-        borderWidth: 2,
+        label: 'Cadangan Gudang (Unit)',
+        data: values,
+        backgroundColor: '#06b6d4',
         borderRadius: 8
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: { legend: { labels: { color: '#94a3b8', font: { family: 'Plus Jakarta Sans' } } } },
       scales: {
-        x: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
-        y: { ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } }
+        x: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } },
+        y: { ticks: { color: '#64748b' }, grid: { color: '#1e293b' } }
       }
     }
   });
+}
 
-  const ctxStatus = document.getElementById('statusChart').getContext('2d');
-  globalChartStatus = new Chart(ctxStatus, {
-    type: 'doughnut',
-    data: {
-      labels: ['Aktif', 'Frozen'],
-      datasets: [{
-        data: [0, 0],
-        backgroundColor: ['#10b981', '#f43f5e'],
-        borderWidth: 0
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8' } } }
+// ==========================================
+// 2. PANEL ADMIN WCB (admin.html)
+// ==========================================
+function initAdminPanel() {
+  const modal = document.getElementById('adminAuthModal');
+  const content = document.getElementById('adminDashboardContent');
+  const btnLogin = document.getElementById('btnLoginAdmin');
+  const pinInput = document.getElementById('adminPinInput');
+  const errorMsg = document.getElementById('authError');
+
+  btnLogin.addEventListener('click', () => {
+    if (pinInput.value === ADMIN_PIN) {
+      modal.classList.add('hidden');
+      content.classList.remove('hidden');
+      loadAdminBackend();
+    } else {
+      errorMsg.textContent = "PIN Keamanan Salah! Akses Ditolak.";
     }
+  });
+
+  pinInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') btnLogin.click();
   });
 }
 
-// Submit Data Form
-wcbForm.addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  const countryName = document.getElementById('countryName').value.trim();
-  const localCurrency = document.getElementById('localCurrency').value.trim();
-  const euphRate = parseFloat(document.getElementById('euphRate').value);
-  const warehouseSupply = parseInt(document.getElementById('warehouseSupply').value);
-  const inflationRate = parseFloat(document.getElementById('inflationRate').value);
-
-  if (!countryName) return;
-
-  const countryRef = db.ref('countries/' + countryName);
-  
-  countryRef.set({
-    name: countryName,
-    currency: localCurrency,
-    euphRate: euphRate,
-    warehouse: warehouseSupply,
-    inflation: inflationRate,
-    status: 'Active',
-    updatedAt: Date.now()
-  })
-  .then(() => {
-    addLog(`Data moneter negara ${countryName} berhasil diperbarui.`, 'INFO');
-    wcbForm.reset();
-  })
-  .catch((err) => {
-    addLog(`Gagal menyimpan data ${countryName}: ${err.message}`, 'DANGER');
+function loadAdminBackend() {
+  db.ref('pending_members').on('value', (snapshot) => {
+    renderPendingTable(snapshot.val() || {});
   });
-});
 
-// Realtime Listener Firebase Database
-db.ref('countries').on('value', (snapshot) => {
-  const data = snapshot.val() || {};
-  currentCountriesData = data;
-  renderTableAndStats(data);
-});
+  db.ref('monetary_data').on('value', (snapshot) => {
+    const data = snapshot.val() || {};
+    const select = document.getElementById('adminSelectCountry');
+    select.innerHTML = '<option value="">-- Pilih Negara Anggota --</option>';
 
-// Render Table, Summary Cards, & Charts
-function renderTableAndStats(data) {
-  countryTableBody.innerHTML = '';
-  
-  const keys = Object.keys(data);
-  const filterQuery = tableSearch.value.toLowerCase();
+    Object.keys(data).forEach(key => {
+      const opt = document.createElement('option');
+      opt.value = key;
+      opt.textContent = `${data[key].country} (${data[key].currency})`;
+      select.appendChild(opt);
+    });
+  });
 
-  let totalCountries = 0;
-  let totalLiquidity = 0;
-  let totalWarehouse = 0;
-  let totalInflationSum = 0;
-  let activeCount = 0;
-  let frozenCount = 0;
+  const updateForm = document.getElementById('adminUpdateForm');
+  updateForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const key = document.getElementById('adminSelectCountry').value;
+    const kurs = document.getElementById('adminKurs').value;
+    const stock = document.getElementById('adminStock').value;
+    const inflation = document.getElementById('adminInflation').value;
+    const status = document.getElementById('adminStatus').value;
 
-  const chartLabels = [];
-  const chartData = [];
+    if (!key) return alert("Pilih negara terlebih dahulu!");
 
+    db.ref(`monetary_data/${key}`).update({
+      kurs: parseFloat(kurs),
+      stock: parseInt(stock),
+      inflation: parseFloat(inflation),
+      status: status
+    }).then(() => {
+      logAdminAction(`Kebijakan Moneter diperbarui untuk [${key}]: Kurs ${kurs}, Stok ${stock}, Status ${status}`);
+      alert("Kebijakan Moneter Berhasil Diterbitkan!");
+      updateForm.reset();
+    });
+  });
+}
+
+function renderPendingTable(pendingData) {
+  const tbody = document.getElementById('adminPendingTable');
+  tbody.innerHTML = '';
+
+  const keys = Object.keys(pendingData);
   if (keys.length === 0) {
-    countryTableBody.innerHTML = `
-      <tr>
-        <td colspan="7" class="py-8 text-center text-slate-500 italic">
-          Belum ada data negara terdaftar di sistem WCB.
-        </td>
-      </tr>`;
-    updateSummaryCards(0, 0, 0, 0);
+    tbody.innerHTML = '<tr><td colspan="4" class="py-6 text-center text-slate-500 italic">Tidak ada antrean pengajuan member.</td></tr>';
     return;
   }
 
-  keys.forEach((key) => {
-    const item = data[key];
-
-    // Filter Logic
-    if (filterQuery && !item.name.toLowerCase().includes(filterQuery) && !item.currency.toLowerCase().includes(filterQuery)) {
-      return;
-    }
-
-    totalCountries++;
-    totalLiquidity += (item.euphRate || 0);
-    totalWarehouse += (item.warehouse || 0);
-    totalInflationSum += (item.inflation || 0);
-
-    if (item.status === 'Frozen') {
-      frozenCount++;
-    } else {
-      activeCount++;
-    }
-
-    chartLabels.push(item.name);
-    chartData.push(item.euphRate);
-
-    const isFrozen = item.status === 'Frozen';
-    const row = document.createElement('tr');
-    row.className = "hover:bg-slate-800/40 transition border-b border-slate-800/40";
-
-    row.innerHTML = `
-      <td class="py-3 px-3 font-semibold text-cyan-300 flex items-center gap-2">
-        <i class="fa-solid fa-landmark text-slate-500"></i> ${item.name}
-      </td>
-      <td class="py-3 px-3 font-mono text-slate-300">${item.currency}</td>
-      <td class="py-3 px-3 font-mono font-semibold text-emerald-400">${item.euphRate} EUPH</td>
-      <td class="py-3 px-3 font-mono text-slate-300">${(item.warehouse || 0).toLocaleString()}</td>
-      <td class="py-3 px-3 font-mono text-amber-400">${item.inflation || 0}%</td>
-      <td class="py-3 px-3">
-        <span class="px-2.5 py-1 text-[10px] font-semibold rounded-full ${isFrozen ? 'bg-red-950/80 text-red-400 border border-red-800' : 'bg-emerald-950/80 text-emerald-400 border border-emerald-800'}">
-          ${item.status || 'Active'}
-        </span>
-      </td>
-      <td class="py-3 px-3 text-right space-x-1">
-        <button onclick="toggleFreeze('${item.name}', '${item.status}')" class="px-2.5 py-1 text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition">
-          <i class="fa-solid ${isFrozen ? 'fa-lock-open' : 'fa-lock'}"></i> ${isFrozen ? 'Unfreeze' : 'Freeze'}
-        </button>
-        <button onclick="deleteCountry('${item.name}')" class="px-2.5 py-1 text-xs bg-red-950/50 hover:bg-red-900 text-red-300 rounded-lg border border-red-800 transition">
-          <i class="fa-solid fa-trash"></i>
-        </button>
+  keys.forEach(key => {
+    const item = pendingData[key];
+    const tr = document.createElement('tr');
+    tr.className = 'hover:bg-slate-800/40 transition';
+    tr.innerHTML = `
+      <td class="py-3 px-2 font-semibold text-white">${item.country}</td>
+      <td class="py-3 px-2 font-mono text-cyan-300">${item.currency}</td>
+      <td class="py-3 px-2">${item.leader}</td>
+      <td class="py-3 px-2 text-right space-x-1">
+        <button onclick="approveMember('${key}')" class="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg text-xs transition">ACC</button>
+        <button onclick="rejectMember('${key}')" class="px-2.5 py-1 bg-rose-600 hover:bg-rose-500 text-white font-semibold rounded-lg text-xs transition">Tolak</button>
       </td>
     `;
+    tbody.appendChild(tr);
+  });
+}
 
-    countryTableBody.appendChild(row);
+window.approveMember = function(key) {
+  db.ref(`pending_members/${key}`).once('value').then(snapshot => {
+    const data = snapshot.val();
+    if (!data) return;
+
+    const newRef = db.ref('monetary_data').push();
+    newRef.set({
+      country: data.country,
+      currency: data.currency,
+      leader: data.leader,
+      flag: data.flag || '',
+      kurs: 1.00,
+      stock: 1000,
+      inflation: 2.5,
+      status: 'Active'
+    }).then(() => {
+      db.ref(`pending_members/${key}`).remove();
+      logAdminAction(`Negara ${data.country} disahkan sebagai Member Resmi WCB!`);
+      alert(`Negara ${data.country} Berhasil Disahkan!`);
+    });
+  });
+};
+
+window.rejectMember = function(key) {
+  if (confirm("Yakin ingin menolak pengajuan negara ini?")) {
+    db.ref(`pending_members/${key}`).remove();
+    logAdminAction(`Pengajuan member ID ${key} ditolak.`);
+  }
+};
+
+function logAdminAction(text) {
+  const logRef = db.ref('admin_logs').push();
+  logRef.set({
+    action: text,
+    timestamp: Date.now()
   });
 
-  const avgInflation = totalCountries > 0 ? (totalInflationSum / totalCountries).toFixed(2) : 0;
-  updateSummaryCards(totalCountries, totalLiquidity.toFixed(2), avgInflation, totalWarehouse);
-
-  // Update Charts
-  if (globalChartLiquidity) {
-    globalChartLiquidity.data.labels = chartLabels;
-    globalChartLiquidity.data.datasets[0].data = chartData;
-    globalChartLiquidity.update();
-  }
-
-  if (globalChartStatus) {
-    globalChartStatus.data.datasets[0].data = [activeCount, frozenCount];
-    globalChartStatus.update();
+  const auditBox = document.getElementById('adminAuditLog');
+  if (auditBox) {
+    const p = document.createElement('p');
+    p.textContent = `[${new Date().toLocaleTimeString()}] ${text}`;
+    auditBox.prepend(p);
   }
 }
-
-// Update Top Stat Cards
-function updateSummaryCards(countries, liquidity, avgInflation, warehouse) {
-  document.getElementById('statTotalCountries').textContent = countries;
-  document.getElementById('statTotalLiquidity').textContent = liquidity + ' EUPH';
-  document.getElementById('statAvgInflation').textContent = avgInflation + '%';
-  document.getElementById('statTotalWarehouse').textContent = warehouse.toLocaleString() + ' Unit';
-}
-
-// Search Filter Listener
-tableSearch.addEventListener('input', () => {
-  renderTableAndStats(currentCountriesData);
-});
-
-// Admin Actions
-window.toggleFreeze = function(countryName, currentStatus) {
-  const newStatus = currentStatus === 'Frozen' ? 'Active' : 'Frozen';
-  db.ref('countries/' + countryName).update({ status: newStatus })
-    .then(() => addLog(`Status moneter ${countryName} diubah ke ${newStatus}.`, 'WARN'));
-};
-
-window.deleteCountry = function(countryName) {
-  if (confirm(`Apakah Anda yakin ingin menghapus data moneter ${countryName}?`)) {
-    db.ref('countries/' + countryName).remove()
-      .then(() => addLog(`Data negara ${countryName} dihapus dari sistem.`, 'DANGER'));
-  }
-};
-
-// Initialize App
-document.addEventListener('DOMContentLoaded', () => {
-  initCharts();
-  addLog('Sistem Portal World Central Bank siap digerakkan.', 'INFO');
-});
