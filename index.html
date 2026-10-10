@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>World Central Bank - Executive Monetary Portal</title>
+  <title>World Central Bank - Sovereign Portal</title>
   
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -32,7 +32,6 @@
   
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-[#0a0e17] text-slate-100 font-sans antialiased min-h-screen flex flex-col">
@@ -46,29 +45,23 @@
         </div>
         <div>
           <h1 class="text-lg font-bold tracking-wider text-white flex items-center gap-2">
-            WORLD CENTRAL BANK <span class="bg-cyan-500/20 text-cyan-300 text-xs px-2 py-0.5 rounded-full border border-cyan-500/30 font-mono">v2.5 PRO</span>
+            WORLD CENTRAL BANK <span class="bg-cyan-500/20 text-cyan-300 text-xs px-2 py-0.5 rounded-full border border-cyan-500/30 font-mono">v3.0 PRO</span>
           </h1>
-          <p class="text-xs text-slate-400">Global Reserve Authority & Monetary Policy System</p>
+          <p class="text-xs text-slate-400">Global Reserve Authority & Sovereign Portal</p>
         </div>
       </div>
 
-      <div class="flex items-center space-x-6">
-        <div class="hidden md:flex items-center space-x-4 border-r border-slate-800 pr-6 text-xs font-mono">
+      <div class="flex items-center space-x-4">
+        <div class="hidden md:flex items-center space-x-4 border-r border-slate-800 pr-4 text-xs font-mono">
           <div class="text-right">
             <span class="text-slate-400 block">SISTEM KURS PEGGED</span>
             <span class="text-emerald-400 font-semibold">1 EUPH = $1.00 USD</span>
           </div>
-          <div class="text-right">
-            <span class="text-slate-400 block">STATUS JARINGAN</span>
-            <span class="text-cyan-400 font-semibold flex items-center justify-end gap-1">
-              <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span> ONLINE
-            </span>
-          </div>
         </div>
-
-        <div id="liveClock" class="font-mono text-xs text-slate-300 bg-slate-800/60 px-3 py-1.5 rounded-lg border border-slate-700">
-          00:00:00 UTC
-        </div>
+        <!-- Tombol Menuju Panel Admin -->
+        <a href="admin.html" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-semibold text-cyan-400 flex items-center gap-2 transition shadow-lg">
+          <i class="fa-solid fa-key"></i> Panel Admin WCB
+        </a>
       </div>
     </div>
   </header>
@@ -78,164 +71,108 @@
 
     <!-- Global Economy Metrics Overview -->
     <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 relative overflow-hidden group hover:border-cyan-500/50 transition">
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
         <div class="flex justify-between items-start">
           <div>
             <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Negara Terdaftar</p>
             <h3 id="statTotalCountries" class="text-2xl font-bold text-white mt-1 font-mono">0</h3>
           </div>
-          <div class="p-3 bg-cyan-500/10 text-cyan-400 rounded-xl">
-            <i class="fa-solid fa-earth-americas text-xl"></i>
-          </div>
-        </div>
-        <div class="mt-3 flex items-center text-xs text-slate-400 gap-1">
-          <span class="text-emerald-400 font-medium"><i class="fa-solid fa-circle-check"></i> Terverifikasi</span>
+          <div class="p-3 bg-cyan-500/10 text-cyan-400 rounded-xl"><i class="fa-solid fa-earth-americas text-xl"></i></div>
         </div>
       </div>
 
-      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 relative overflow-hidden group hover:border-emerald-500/50 transition">
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
         <div class="flex justify-between items-start">
           <div>
             <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Likuiditas EUPH</p>
             <h3 id="statTotalLiquidity" class="text-2xl font-bold text-emerald-400 mt-1 font-mono">0 EUPH</h3>
           </div>
-          <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl">
-            <i class="fa-solid fa-money-bill-wave text-xl"></i>
-          </div>
-        </div>
-        <div class="mt-3 flex items-center text-xs text-slate-400 gap-1">
-          <span class="text-slate-400">Total Pasokan Beredar</span>
+          <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-xl"><i class="fa-solid fa-money-bill-wave text-xl"></i></div>
         </div>
       </div>
 
-      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 relative overflow-hidden group hover:border-amber-500/50 transition">
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
         <div class="flex justify-between items-start">
           <div>
             <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Rata-rata Inflasi Global</p>
             <h3 id="statAvgInflation" class="text-2xl font-bold text-amber-400 mt-1 font-mono">0.0%</h3>
           </div>
-          <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl">
-            <i class="fa-solid fa-chart-line text-xl"></i>
-          </div>
-        </div>
-        <div class="mt-3 flex items-center text-xs text-slate-400 gap-1">
-          <span class="text-slate-400">Indeks Moneter WCB</span>
+          <div class="p-3 bg-amber-500/10 text-amber-400 rounded-xl"><i class="fa-solid fa-chart-line text-xl"></i></div>
         </div>
       </div>
 
-      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 relative overflow-hidden group hover:border-purple-500/50 transition">
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Cadangan Emas & Logistik</p>
+            <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Cadangan Gudang Sentral</p>
             <h3 id="statTotalWarehouse" class="text-2xl font-bold text-purple-400 mt-1 font-mono">0 Unit</h3>
           </div>
-          <div class="p-3 bg-purple-500/10 text-purple-400 rounded-xl">
-            <i class="fa-solid fa-boxes-stacked text-xl"></i>
-          </div>
-        </div>
-        <div class="mt-3 flex items-center text-xs text-slate-400 gap-1">
-          <span class="text-slate-400">Stok Gudang Sentral</span>
+          <div class="p-3 bg-purple-500/10 text-purple-400 rounded-xl"><i class="fa-solid fa-boxes-stacked text-xl"></i></div>
         </div>
       </div>
     </section>
 
-    <!-- Visual Charts & Analytical Dashboard -->
-    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div class="lg:col-span-2 bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
-        <div class="flex justify-between items-center mb-4">
-          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider flex items-center gap-2">
-            <i class="fa-solid fa-chart-area text-cyan-400"></i> Distribusi Likuiditas EUPH Antar Negara
-          </h2>
-        </div>
-        <div class="h-64 relative">
-          <canvas id="liquidityChart"></canvas>
-        </div>
-      </div>
-
-      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5 flex flex-col justify-between">
-        <div>
-          <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
-            <i class="fa-solid fa-pie-chart text-purple-400"></i> Status Lisensi Ekonomi
-          </h2>
-          <div class="h-48 relative">
-            <canvas id="statusChart"></canvas>
-          </div>
-        </div>
-        <div class="p-3 bg-slate-800/40 rounded-xl border border-slate-700/50 text-xs text-slate-400 mt-4">
-          <i class="fa-solid fa-shield-halved text-cyan-400"></i> Status <b class="text-slate-200">Frozen</b> membekukan seluruh transaksi moneter negara target di sistem WCB.
-        </div>
+    <!-- Visual Chart Section -->
+    <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
+      <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-chart-area text-cyan-400"></i> Distribusi Likuiditas & Reserve EUPH Antar Negara
+      </h2>
+      <div class="h-64 relative">
+        <canvas id="liquidityChart"></canvas>
       </div>
     </section>
 
-    <!-- Registration Form & Database Grid -->
+    <!-- Registration Form & Public Monitoring Table -->
     <section class="grid grid-cols-1 lg:grid-cols-3 gap-6">
       
-      <!-- Country Registration Card -->
+      <!-- Country Registration Card (For Members/Public) -->
       <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 h-fit">
         <div class="flex items-center space-x-3 mb-5 border-b border-slate-800 pb-4">
           <div class="p-2.5 bg-cyan-500/10 text-cyan-400 rounded-xl">
             <i class="fa-solid fa-file-signature text-lg"></i>
           </div>
           <div>
-            <h2 class="text-base font-bold text-white">Registrasi & Update Moneter</h2>
-            <p class="text-xs text-slate-400">Daftarkan atau perbarui nilai moneter negara</p>
+            <h2 class="text-base font-bold text-white">Registrasi Negara Baru</h2>
+            <p class="text-xs text-slate-400">Ajukan integrasi sistem moneter ke WCB</p>
           </div>
         </div>
 
-        <form id="wcbForm" class="space-y-4">
+        <form id="memberRegisterForm" class="space-y-4">
           <div>
             <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Nama Negara</label>
-            <div class="relative">
-              <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><i class="fa-solid fa-flag"></i></span>
-              <input type="text" id="countryName" required placeholder="Contoh: Euphonia" class="w-full pl-9 pr-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
-            </div>
+            <input type="text" id="regCountryName" required placeholder="Contoh: Imperium Euphonia" class="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
           </div>
-
           <div class="grid grid-cols-2 gap-3">
             <div>
-              <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Mata Uang Lokal</label>
-              <input type="text" id="localCurrency" required placeholder="Contoh: EUP" class="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+              <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Mata Uang</label>
+              <input type="text" id="regCurrency" required placeholder="EUPH" class="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
             </div>
             <div>
-              <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Kurs EUPH</label>
-              <input type="number" step="0.01" id="euphRate" required placeholder="1.00" class="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm font-mono text-cyan-300 focus:outline-none focus:border-cyan-500 transition">
+              <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Delegasi / Pemimpin</label>
+              <input type="text" id="regLeader" required placeholder="Guill" class="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
             </div>
           </div>
-
-          <div class="grid grid-cols-2 gap-3">
-            <div>
-              <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Stok Gudang (Unit)</label>
-              <input type="number" id="warehouseSupply" required placeholder="1000" class="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm font-mono text-white focus:outline-none focus:border-cyan-500 transition">
-            </div>
-            <div>
-              <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Indeks Inflasi (%)</label>
-              <input type="number" step="0.1" id="inflationRate" required placeholder="2.5" class="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm font-mono text-amber-400 focus:outline-none focus:border-cyan-500 transition">
-            </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">URL Bendera / Lambang (Opsional)</label>
+            <input type="url" id="regFlag" placeholder="https://..." class="w-full px-3 py-2 bg-slate-800/80 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
           </div>
-
           <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold rounded-xl text-sm shadow-lg shadow-cyan-900/30 transition transform active:scale-95 flex items-center justify-center gap-2">
-            <i class="fa-solid fa-floppy-disk"></i> Simpan Data Moneter
+            <i class="fa-solid fa-paper-plane"></i> Kirim Pengajuan Member
           </button>
         </form>
       </div>
 
-      <!-- Live Database Table Card -->
+      <!-- Live Public Monitoring Table Card -->
       <div class="lg:col-span-2 bg-slate-900/60 border border-slate-800 rounded-2xl p-6 flex flex-col">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-800">
+        <div class="flex items-center justify-between mb-4 pb-4 border-b border-slate-800">
           <div class="flex items-center space-x-3">
             <div class="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl">
-              <i class="fa-solid fa-list-check text-lg"></i>
+              <i class="fa-solid fa-globe text-lg"></i>
             </div>
             <div>
-              <h2 class="text-base font-bold text-white">Dashboard Monitoring Real-Time</h2>
-              <p class="text-xs text-slate-400">Data terhubung langsung dengan Firebase Central Database</p>
+              <h2 class="text-base font-bold text-white">Dashboard Monitoring Publik</h2>
+              <p class="text-xs text-slate-400">Data resmi negara anggota yang terverifikasi</p>
             </div>
-          </div>
-
-          <!-- Search Filter -->
-          <div class="relative w-full sm:w-64">
-            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500"><i class="fa-solid fa-magnifying-glass"></i></span>
-            <input type="text" id="tableSearch" placeholder="Cari negara / mata uang..." class="w-full pl-9 pr-3 py-1.5 bg-slate-800/80 border border-slate-700 rounded-xl text-xs text-white focus:outline-none focus:border-cyan-500 transition">
           </div>
         </div>
 
@@ -246,16 +183,15 @@
                 <th class="py-3 px-3">Negara</th>
                 <th class="py-3 px-3">Mata Uang</th>
                 <th class="py-3 px-3">Kurs EUPH</th>
-                <th class="py-3 px-3">Gudang</th>
+                <th class="py-3 px-3">Stok Gudang</th>
                 <th class="py-3 px-3">Inflasi</th>
                 <th class="py-3 px-3">Status</th>
-                <th class="py-3 px-3 text-right">Aksi Manajemen</th>
               </tr>
             </thead>
-            <tbody id="countryTableBody" class="divide-y divide-slate-800/50">
+            <tbody id="publicTableBody" class="divide-y divide-slate-800/50">
               <tr>
-                <td colspan="7" class="py-8 text-center text-slate-500 italic">
-                  <i class="fa-solid fa-spinner animate-spin text-lg mb-2 block"></i> Memuat data bank sentral...
+                <td colspan="6" class="py-8 text-center text-slate-500 italic">
+                  <i class="fa-solid fa-spinner animate-spin text-lg mb-2 block"></i> Memuat data moneter...
                 </td>
               </tr>
             </tbody>
@@ -263,24 +199,14 @@
         </div>
       </div>
     </section>
-
-    <!-- Transaction Audit Log -->
-    <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
-      <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-3 flex items-center gap-2">
-        <i class="fa-solid fa-clock-rotate-left text-cyan-400"></i> Log Riwayat Transaksi Moneter Sentral
-      </h2>
-      <div id="auditLog" class="font-mono text-xs text-slate-400 bg-slate-950/80 p-4 rounded-xl border border-slate-800 h-32 overflow-y-auto space-y-1">
-        <p class="text-slate-600">[SYSTEM] Menunggu sinyal aktivitas dari database Firebase...</p>
-      </div>
-    </section>
   </main>
 
   <!-- Footer -->
   <footer class="border-t border-slate-800 bg-slate-950 py-4 px-6 text-center text-xs text-slate-500">
-    <p>© 2026 World Central Bank Authority. Reserved for Imperium Harmonic of Euphonia & Alliance Nations.</p>
+    <p>© 2026 World Central Bank Authority. Sovereign Member Portal.</p>
   </footer>
 
-  <!-- Firebase 8 SDKs -->
+  <!-- Firebase 8 SDKs & Script -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
   <script src="app.js"></script>
