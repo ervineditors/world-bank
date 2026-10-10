@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WCB Sovereign Vault (Admin) - World Central Bank</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#ecfeff', 500: '#06b6d4', 600: '#0891b2', 900: '#164e63' },
+            darkbg: '#0b0f19',
+            cardbg: '#111827'
+          },
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-[#0a0e17] text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+
+  <!-- PIN Authentication Modal -->
+  <div id="adminAuthModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl text-center space-y-4">
+      <div class="inline-flex p-3 bg-cyan-500/10 text-cyan-400 rounded-2xl border border-cyan-500/20 mb-2">
+        <i class="fa-solid fa-shield-halved text-3xl"></i>
+      </div>
+      <h2 class="text-xl font-bold text-white">WCB SOVEREIGN VAULT (ADMIN)</h2>
+      <p class="text-xs text-slate-400">Masukkan PIN Keamanan 6 Angka untuk akses Otoritas Sentral.</p>
+      
+      <div class="space-y-3 pt-2">
+        <input type="password" id="adminPinInput" maxlength="6" placeholder="••••••" class="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-center text-xl font-mono text-cyan-400 tracking-widest focus:outline-none focus:border-cyan-500 transition">
+        <button id="btnLoginAdmin" class="w-full py-3 bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-semibold rounded-xl text-sm shadow-lg shadow-cyan-900/30 transition">
+          Buka Vault Admin
+        </button>
+        <p id="authError" class="text-xs text-rose-400 font-mono h-4"></p>
+      </div>
+
+      <div class="pt-4 border-t border-slate-800">
+        <a href="index.html" class="text-xs text-slate-400 hover:text-cyan-400 transition flex items-center justify-center gap-1">
+          <i class="fa-solid fa-arrow-left"></i> Kembali ke Portal Publik
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Admin Vault Content -->
+  <div id="adminDashboardContent" class="flex-1 flex flex-col hidden">
+    <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-6 py-3">
+      <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <div class="bg-cyan-500/10 p-2.5 rounded-xl border border-cyan-500/30 text-cyan-400">
+            <i class="fa-solid fa-vault text-2xl"></i>
+          </div>
+          <div>
+            <h1 class="text-lg font-bold tracking-wider text-white flex items-center gap-2">
+              WCB SOVEREIGN VAULT <span class="bg-cyan-500/20 text-cyan-300 text-xs px-2 py-0.5 rounded-full border border-cyan-500/30 font-mono">ADMIN PANEL</span>
+            </h1>
+            <p class="text-xs text-slate-400">Kontrol Penuh Kebijakan Moneter, SDA, Bursa & Akun Negara</p>
+          </div>
+        </div>
+        <a href="index.html" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-semibold text-slate-300 flex items-center gap-2 transition">
+          <i class="fa-solid fa-globe"></i> Portal Publik
+        </a>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-6 space-y-6">
+
+      <!-- 1. MANAJEMEN BURSA & PERUSAHAAN -->
+      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6[cite: 10]">
+        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-building text-cyan-400"></i> Manajemen Bursa & Perusahaan (Maju / Hapus)[cite: 10]
+        </h2>
+        <div id="bursaListAdmin" class="text-xs text-slate-400 italic">Belum ada perusahaan berdirinya[cite: 10].</div>
+      </section>
+
+      <!-- 2. KENDALI GUDANG & SDA NEGARA -->
+      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6[cite: 10, 11]">
+        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-boxes-stacked text-amber-400"></i> Kendali Gudang & SDA Negara[cite: 10, 11]
+        </h2>
+        <form id="sdaForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Pilih Negara Target[cite: 10, 11]</label>
+            <select id="sdaCountrySelect" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+              <option value="">-- Pilih Negara Target --</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Stok SDA Raw[cite: 10, 11]</label>
+              <input type="number" id="sdaStock" required placeholder="Jumlah SDA[cite: 10, 11]" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white focus:outline-none focus:border-cyan-500 transition">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Max Storage Capacity[cite: 10, 11]</label>
+              <input type="number" id="sdaMaxStorage" required placeholder="Max Storage[cite: 10, 11]" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white focus:outline-none focus:border-cyan-500 transition">
+            </div>
+          </div>
+          <button type="submit" class="w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl text-sm transition">
+            Simpan Data SDA & Storage[cite: 10, 11]
+          </button>
+        </form>
+      </section>
+
+      <!-- 3. REGULASI VALUTA & NILAI TUKAR (KURS PLAYER) -->
+      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6[cite: 11]">
+        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-coins text-emerald-400"></i> Regulasi Valuta & Nilai Tukar (Kurs Player)[cite: 11]
+        </h2>
+        <form id="kursForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Pilih Negara[cite: 11]</label>
+            <select id="kursCountrySelect" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+              <option value="">-- Pilih Negara --</option>
+            </select>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Jumlah EUPH[cite: 11]</label>
+              <input type="number" step="0.01" id="kursEuph" value="1" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-cyan-300 focus:outline-none focus:border-cyan-500 transition">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 uppercase tracking-wider mb-1.5">Dapat Uang Lokal (Lokal)[cite: 11]</label>
+              <input type="text" id="kursLocal" placeholder="Contoh: 100[cite: 11]" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white focus:outline-none focus:border-cyan-500 transition">
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-3 pt-2">
+            <button type="button" onclick="adjustKurs('kuat')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-xs transition">📈 Kuatkan (+10%)[cite: 11]</button>
+            <button type="button" onclick="adjustKurs('lemah')" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-semibold rounded-xl text-xs transition">📉 Lemahkan (-10%)[cite: 11]</button>
+            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl text-xs transition">💾 Set Kurs[cite: 11]</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 4. ATUR PAJAK INTERNASIONAL GLOBAL -->
+      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6[cite: 12]">
+        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-percent text-purple-400"></i> Atur Pajak Internasional Global (Acak / Flat)[cite: 12]
+        </h2>
+        <form id="taxForm" class="flex gap-4 items-center">
+          <input type="number" step="0.1" id="globalTaxInput" value="5" required class="w-32 px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white focus:outline-none focus:border-cyan-500 transition">
+          <button type="submit" class="px-5 py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl text-sm transition">Simpan Pajak[cite: 12]</button>
+        </form>
+      </section>
+
+      <!-- 5. KELOLA KATALOG GLOBAL MARKET -->
+      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6[cite: 12]">
+        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-cart-shopping text-cyan-400"></i> Kelola Katalog Global Market[cite: 12]
+        </h2>
+        <form id="marketForm" class="space-y-4 mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" id="marketItemName" placeholder="Nama Barang / Armada (misal: Jet F-35)[cite: 12]" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+            <input type="number" id="marketItemPrice" placeholder="Harga (EUPH)[cite: 12]" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-cyan-300 focus:outline-none focus:border-cyan-500 transition">
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <input type="text" id="marketItemCategory" placeholder="Kategori (misal: Alutsista)[cite: 12]" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+            <input type="text" id="marketItemDesc" placeholder="Deskripsi Singkat / Spesifikasi[cite: 12]" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
+          </div>
+          <button type="submit" class="w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl text-sm transition">+ Tambah Ke Market[cite: 12]</button>
+        </form>
+        <div id="marketItemList" class="space-y-3">
+          <!-- Item list injected by JS -->
+        </div>
+      </section>
+
+      <!-- 6. MANAJEMEN AKUN NEGARA -->
+      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6[cite: 13]">
+        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-user-gear text-rose-400"></i> Manajemen Akun Negara (Peringatan / Freeze / Hapus)[cite: 13]
+        </h2>
+        <div id="adminAccountList" class="space-y-4">
+          <!-- Account list injected by JS -->
+        </div>
+      </section>
+
+      <!-- 7. PERMOHONAN PINJAMAN MEMBER & PENGAJUAN BARU -->
+      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6[cite: 13]">
+        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-file-circle-check text-purple-400"></i> Permohonan Pinjaman & Member Baru (Pending)[cite: 13]
+        </h2>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400 uppercase tracking-wider font-semibold">
+                <th class="py-3 px-2">Negara</th>
+                <th class="py-3 px-2">Mata Uang / Delegasi</th>
+                <th class="py-3 px-2 text-right">Otoritas Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="adminPendingTable" class="divide-y divide-slate-800/50">
+              <tr><td colspan="3" class="py-4 text-center text-slate-500 italic">Tidak ada pengajuan pending[cite: 13].</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
