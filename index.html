@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>World Central Bank - Sovereign Member Portal</title>
+  <title>World Central Bank - Sovereign Member Portal (CNU Edition)</title>
   
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -13,7 +13,7 @@
         extend: {
           colors: {
             brand: { 50: '#ecfeff', 500: '#06b6d4', 600: '#0891b2', 900: '#164e63' },
-            darkbg: '#0b0f19', cardbg: '#111827'
+            darkbg: '#060911', cardbg: '#0f172a'
           },
           fontFamily: {
             sans: ['Plus Jakarta Sans', 'sans-serif'],
@@ -26,129 +26,129 @@
 
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <style>
+    /* Neon Glow & Tech Grid CNU Theme */
+    body {
+      background-color: #060911;
+      background-image: radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.15), transparent 70%),
+                        linear-gradient(rgba(15, 23, 42, 0.6) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(15, 23, 42, 0.6) 1px, transparent 1px);
+      background-size: 100% 100%, 30px 30px, 30px 30px;
+    }
+    .neon-border-cyan { box-shadow: 0 0 15px rgba(6, 182, 212, 0.3); border: 1px solid rgba(6, 182, 212, 0.5); }
+    .neon-border-orange { box-shadow: 0 0 15px rgba(249, 115, 22, 0.3); border: 1px solid rgba(249, 115, 22, 0.5); }
+    .neon-border-purple { box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); border: 1px solid rgba(168, 85, 247, 0.5); }
+    
+    /* Sparkle Button Animation (CSS TikTok Web Genius) */
+    .btn-sparkle {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .btn-sparkle::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%; width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
+      transform: rotate(45deg);
+      transition: all 0.5s ease;
+    }
+    .btn-sparkle:hover::before { left: 100%; top: 100%; }
+  </style>
 </head>
-<body class="bg-[#0a0e17] text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+<body class="text-slate-100 font-sans antialiased min-h-screen flex flex-col">
 
-  <!-- MODAL AUTHENTICATION (3 KOTAK PENDAFTARAN & LOGIN) -->
-  <div id="authModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 max-w-2xl w-full shadow-2xl space-y-5 max-h-[92vh] overflow-y-auto">
+  <!-- MODAL AUTHENTICATION (3 KOTAK: LOGIN MEMBER, REGISTER NEGARA, SEWA SERVER) -->
+  <div id="authModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+    <div class="max-w-5xl w-full grid grid-cols-1 md:grid-cols-3 gap-5 max-h-[95vh] overflow-y-auto p-2">
       
-      <div class="text-center">
-        <h1 class="text-2xl font-bold tracking-wider text-white">WORLD CENTRAL BANK</h1>
-        <p class="text-xs text-slate-400 font-mono mt-1">SOVEREIGN MONETARY AUTHORITY & SERVER ECOSYSTEM</p>
+      <!-- KOTAK 1: LOGIN MEMBER (BIRU NEON) -->
+      <div class="bg-slate-900/90 rounded-2xl p-6 neon-border-cyan flex flex-col justify-between space-y-4">
+        <div>
+          <div class="flex items-center gap-2 text-cyan-400 font-bold text-sm mb-1">
+            <i class="fa-solid fa-right-to-bracket text-lg"></i> KOTAK 1: LOGIN MEMBER
+          </div>
+          <p class="text-[11px] text-slate-400">Masuk untuk negara yang sudah terdaftar.</p>
+          
+          <form id="loginForm" class="space-y-3 mt-4">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Kode Server (4-Digit)</label>
+              <input type="text" id="loginServerCode" placeholder="Contoh: 1001" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono text-cyan-400">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">Nama Negara</label>
+              <input type="text" id="loginCountry" placeholder="Nama Negara Anda" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-300 mb-1">PIN Keamanan (6-Digit)</label>
+              <input type="password" id="loginPin" maxlength="6" placeholder="••••••" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-center text-sm font-mono text-cyan-400 tracking-widest">
+            </div>
+            <button type="submit" class="w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl text-xs btn-sparkle transition">Masuk Dashboard</button>
+          </form>
+        </div>
+        <div class="text-center pt-2 border-t border-slate-800">
+          <span class="text-[10px] text-slate-500">CNU Sovereign Network v4.0</span>
+        </div>
       </div>
 
-      <!-- Tab Navigation 3 Kotak Portal -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800 text-xs font-semibold">
-        <button type="button" id="authTabLoginBtn" onclick="switchAuthTab('login')" class="py-2.5 px-2 rounded-lg bg-blue-600 text-white transition text-center">1. MASUK (LOGIN)</button>
-        <button type="button" id="authTabRegisterBtn" onclick="switchAuthTab('register')" class="py-2.5 px-2 rounded-lg text-slate-400 hover:text-white transition text-center">2. BUAT AKUN NEGARA</button>
-        <button type="button" id="authTabServerBtn" onclick="switchAuthTab('server')" class="py-2.5 px-2 rounded-lg text-rose-400 hover:text-rose-200 transition text-center border border-rose-500/30">3. SEWA SERVER (RP 5K)</button>
+      <!-- KOTAK 2: DAFTAR AKUN NEGARA (BIRU NEON) -->
+      <div class="bg-slate-900/90 rounded-2xl p-6 neon-border-cyan space-y-3">
+        <div class="flex items-center gap-2 text-cyan-400 font-bold text-sm">
+          <i class="fa-solid fa-flag text-lg"></i> KOTAK 2: BUAT AKUN NEGARA
+        </div>
+        <p class="text-[11px] text-slate-400">Daftarkan negara baru ke dalam sistem server.</p>
+
+        <form id="registerForm" class="space-y-2.5">
+          <input type="text" id="regServerCode" placeholder="Kode Server (4-Digit, Misal: 1001)" required class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono text-cyan-300">
+          <input type="text" id="regCountry" placeholder="Nama Negara" required class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
+          <input type="text" id="regLeader" placeholder="Pemimpin / Delegasi" required class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
+          <input type="text" id="regCurrency" placeholder="Nama Uang Lokal (Rig/Eupra)" required class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
+          <input type="url" id="regFlag" placeholder="URL Bendera Negara (https://...)" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
+          <input type="number" id="regPopulation" max="10000000" placeholder="Populasi Awal (Max 10 Juta Jiwa)" required class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs font-mono text-emerald-400">
+          <input type="password" id="regPin" maxlength="6" placeholder="Buat PIN (6-Digit Angka)" required class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-center text-xs font-mono text-cyan-400 tracking-widest">
+          <button type="submit" class="w-full py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl text-xs btn-sparkle transition">Daftarkan Rekening Negara</button>
+        </form>
       </div>
 
-      <!-- KOTAK 1: FORM MASUK (LOGIN MEMBER) -->
-      <form id="loginForm" class="space-y-4">
-        <div class="p-3 bg-blue-950/40 border border-blue-800/50 rounded-xl text-xs text-blue-300">
-          <i class="fa-solid fa-circle-info mr-1"></i> Masukkan Nama Negara dan Kode Server Komunitas kamu.
+      <!-- KOTAK 3: REGISTRASI SEWA SERVER KOMUNITAS (ORANGE KEMERAHAN) -->
+      <div class="bg-slate-900/90 rounded-2xl p-6 neon-border-orange space-y-3">
+        <div class="flex items-center gap-2 text-orange-400 font-bold text-sm">
+          <i class="fa-solid fa-server text-lg"></i> KOTAK 3: SEWA SERVER KOMUNITAS
         </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Kode Server 4-Digit Komunitas</label>
-          <input type="text" id="loginServerCode" maxlength="4" placeholder="Contoh: 2701 (Ketik 0000 untuk Server Utama CNU)" required class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm font-mono text-cyan-400 focus:outline-none focus:border-cyan-500 transition">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Negara</label>
-          <input type="text" id="loginCountry" placeholder="Contoh: Imperium Euphonia" required class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">PIN Keamanan (6-Digit Angka)</label>
-          <input type="password" id="loginPin" maxlength="6" placeholder="••••••" required class="w-full px-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-center text-lg font-mono text-cyan-400 tracking-widest focus:outline-none focus:border-cyan-500 transition">
-        </div>
-        <button type="submit" class="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl text-sm shadow-lg transition">Masuk ke Dashboard Negara</button>
-      </form>
+        <p class="text-[11px] text-slate-400">Pendaftaran Komunitas Baru (Rp 5.000 / 6 Bulan). Dapat Link & Kode Server 4-Digit.</p>
 
-      <!-- KOTAK 2: FORM BUAT AKUN NEGARA BARU -->
-      <form id="registerForm" class="space-y-3 hidden">
-        <div class="p-3 bg-cyan-950/40 border border-cyan-800/50 rounded-xl text-xs text-cyan-300">
-          <i class="fa-solid fa-user-plus mr-1"></i> Pendaftaran Akun Negara Member Komunitas.
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Negara</label>
-            <input type="text" id="regCountry" placeholder="Contoh: Imperium Euphonia" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Pemimpin / Delegasi</label>
-            <input type="text" id="regLeader" placeholder="Contoh: President Guillaume" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
-          </div>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Mata Uang Lokal</label>
-            <input type="text" id="regCurrency" placeholder="Contoh: Rig / Eupra" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-slate-300 mb-1">Kode Server 4-Digit</label>
-            <input type="text" id="regServerCode" maxlength="4" placeholder="Ketik 0000 jika CNU" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm font-mono text-cyan-400 focus:outline-none focus:border-cyan-500 transition">
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Link URL Bendera Negara</label>
-          <input type="url" id="regFlag" placeholder="https://example.com/flag.png (Opsional)" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white focus:outline-none focus:border-cyan-500 transition">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Populasi Awal Negara (Batas Maksimal 10.000.000 Jiwa)</label>
-          <input type="number" id="regPopulation" max="10000000" placeholder="Maksimal 10000000" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm font-mono text-emerald-400 focus:outline-none focus:border-cyan-500 transition">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Buat PIN Keamanan (6-Digit Angka)</label>
-          <input type="password" id="regPin" maxlength="6" placeholder="••••••" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-center text-base font-mono text-cyan-400 tracking-widest focus:outline-none focus:border-cyan-500 transition">
-        </div>
-        <button type="submit" class="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl text-sm shadow-lg transition">Daftarkan Rekening Negara</button>
-      </form>
-
-      <!-- KOTAK 3: FORM SEWA SERVER KOMUNITAS LAIN (ORANGE/RED) -->
-      <form id="serverForm" class="space-y-3 hidden">
-        <div class="p-3 bg-rose-950/50 border border-rose-800 rounded-xl text-xs text-rose-200">
-          <i class="fa-solid fa-server mr-1"></i> Pendaftaran Server Komunitas Luar (Rp 5.000 / 6 Bulan). Dapat Link Server Khusus & 4-Digit Access Code.
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Komunitas / Server RP</label>
-          <input type="text" id="srvName" placeholder="Contoh: Server RP Garudayana" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Pilih Tema Warna Web Komunitas</label>
-          <select id="srvTheme" class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white">
-            <option value="cyan">Cyan / Tech (Bawaan CNU)</option>
-            <option value="emerald">Emerald / Green Nation</option>
-            <option value="purple">Royal Purple / Empire</option>
-            <option value="amber">Amber / Gold Economy</option>
+        <form id="serverRentForm" class="space-y-2.5">
+          <input type="text" id="rentCommunityName" placeholder="Nama Komunitas RP" required class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
+          <input type="text" id="rentOwnerName" placeholder="Nama Pemilik / Admin Komunitas" required class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
+          <select id="rentTheme" class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
+            <option value="cyan">🎨 Tema Neon Cyan (Default)</option>
+            <option value="purple">🎨 Tema Neon Violet</option>
+            <option value="emerald">🎨 Tema Neon Emerald</option>
+            <option value="rose">🎨 Tema Neon Rose</option>
           </select>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-slate-300 mb-1">Upload Link Bukti Pembayaran (Rp 5.000)</label>
-          <input type="url" id="srvProof" placeholder="https://image-bukti-transfer.com/file.png" required class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-sm text-white">
-        </div>
-        <button type="submit" class="w-full py-3 bg-gradient-to-r from-orange-600 to-rose-600 hover:from-orange-500 hover:to-rose-500 text-white font-semibold rounded-xl text-sm shadow-lg transition">Ajukan Sewa Server Komunitas</button>
-      </form>
-
-      <div class="text-center pt-2 border-t border-slate-800">
-        <a href="admin.html" class="text-xs text-cyan-400 hover:underline flex items-center justify-center gap-1"><i class="fa-solid fa-key"></i> Buka Otoritas Admin Vault</a>
+          <input type="text" id="rentPaymentProof" placeholder="Link / Catatan Bukti Transfer 5k" required class="w-full px-3 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white">
+          <button type="submit" class="w-full py-2 bg-gradient-to-r from-orange-600 to-rose-600 hover:from-orange-500 text-white font-semibold rounded-xl text-xs btn-sparkle transition">Ajukan & Minta Kode Server (5k)</button>
+        </form>
       </div>
 
     </div>
   </div>
 
-  <!-- MODAL NOTA RESI DIGITAL -->
+  <!-- MODAL NOTA RESI DIGITAL (OFFICIAL STATEMENT) -->
   <div id="receiptModal" class="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-slate-900 border border-cyan-500/30 rounded-2xl p-6 max-w-md w-full shadow-2xl space-y-4 text-center">
       <div class="border-b border-slate-800 pb-3">
-        <h2 class="text-base font-bold text-white tracking-wider flex items-center justify-center gap-2"><i class="fa-solid fa-receipt text-cyan-400"></i> NOTA TRANSAKSI RESMI WCB</h2>
+        <h2 class="text-base font-bold text-white tracking-wider flex items-center justify-center gap-2">
+          <i class="fa-solid fa-receipt text-cyan-400"></i> NOTA TRANSAKSI RESMI WCB
+        </h2>
         <p class="text-[10px] text-slate-400 font-mono">WORLD CENTRAL BANK SOVEREIGN LEDGER</p>
       </div>
       <div id="receiptDetails" class="text-left space-y-2 font-mono text-xs text-slate-300 bg-slate-950 p-4 rounded-xl border border-slate-800"></div>
       <div class="flex gap-2">
-        <button onclick="window.print()" class="flex-1 py-2 bg-cyan-600 text-white font-semibold rounded-xl text-xs"><i class="fa-solid fa-print"></i> Cetak / Simpan PDF</button>
-        <button onclick="closeReceipt()" class="px-4 py-2 bg-slate-800 text-slate-300 font-semibold rounded-xl text-xs">Tutup</button>
+        <button onclick="window.print()" class="flex-1 py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl text-xs transition"><i class="fa-solid fa-print"></i> Cetak / Simpan PDF</button>
+        <button onclick="closeReceipt()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-xl text-xs transition">Tutup</button>
       </div>
     </div>
   </div>
@@ -175,9 +175,11 @@
         <button onclick="switchTab('pajak')" id="nav-pajak" class="tab-btn px-3 py-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 transition flex items-center gap-1.5"><i class="fa-solid fa-percent"></i> Pajak Diplomatik</button>
         <button onclick="switchTab('diplomacy')" id="nav-diplomacy" class="tab-btn px-3 py-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 transition flex items-center gap-1.5"><i class="fa-solid fa-handshake"></i> Kerjasama & Embargo</button>
         
-        <!-- FAST LOGIN ADMIN & TOMBOL KELUAR -->
-        <a href="admin.html" class="px-3 py-2 bg-cyan-900/40 hover:bg-cyan-800 text-cyan-300 rounded-xl transition flex items-center gap-1 border border-cyan-500/30"><i class="fa-solid fa-key"></i> Admin Vault</a>
-        <button onclick="logoutMember()" class="px-3 py-2 bg-rose-900/60 hover:bg-rose-800 text-rose-200 rounded-xl transition flex items-center gap-1 border border-rose-500/30"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
+        <!-- SHORTCUT LOGIN ADMIN VAULT DARI DASHBOARD -->
+        <a href="admin.html" class="px-3 py-2 bg-purple-900/40 hover:bg-purple-800 text-purple-300 border border-purple-500/30 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-vault"></i> Vault Admin</a>
+        
+        <!-- TOMBOL KELUAR -->
+        <button onclick="logoutMember()" class="px-3 py-2 bg-rose-900/40 hover:bg-rose-800 text-rose-300 rounded-xl transition flex items-center gap-1"><i class="fa-solid fa-right-from-bracket"></i> Keluar</button>
       </nav>
     </div>
   </header>
@@ -205,7 +207,7 @@
         <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
           <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">PDB / GDP Negara (EUPH)</p>
           <h3 id="statPdb" class="text-2xl font-bold text-white mt-1 font-mono">0 EUPH</h3>
-          <p class="text-xs text-slate-500 mt-2">Devisa + Kas + Industri</p>
+          <p class="text-xs text-slate-500 mt-2">Devisa + Kas + Nilai Industri</p>
         </div>
         <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
           <p class="text-xs font-medium text-slate-400 uppercase tracking-wider">Cadangan Devisa (EUPH)</p>
@@ -226,13 +228,13 @@
         </div>
       </section>
 
-      <!-- LIVE POPULATION TICKER (+20/min, Kematian Terikat Kesejahteraan) -->
+      <!-- LIVE POPULATION TICKER DINAMIS -->
       <section class="bg-gradient-to-r from-slate-900/80 to-indigo-950/40 border border-indigo-500/30 rounded-2xl p-5 flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
           <h2 class="text-sm font-bold text-indigo-300 uppercase tracking-wider flex items-center gap-2">
-            <i class="fa-solid fa-users text-indigo-400"></i> Pertumbuhan Populasi Real-Time (Server Live Sync)
+            <i class="fa-solid fa-users text-indigo-400"></i> Statistik Pertumbuhan Populasi Real-Time
           </h2>
-          <p class="text-xs text-slate-400 mt-1">Dinamika Kependudukan: Kelahiran +20 bayi/menit | Kematian terikat Indeks Kesejahteraan.</p>
+          <p class="text-xs text-slate-400 mt-1">Dinamika Kependudukan Live: Lahir (+20 bayi/menit) | Kematian tergantung Indeks Kesejahteraan.</p>
         </div>
         <div class="flex items-center gap-4 font-mono text-xs">
           <div class="bg-slate-950/80 px-4 py-2 rounded-xl border border-slate-800 text-center">
@@ -250,7 +252,7 @@
         </div>
       </section>
 
-      <!-- MOST POPULATION RANK TABLE -->
+      <!-- LEADERBOARD MOST POPULATION -->
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-5">
         <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-3 flex items-center gap-2">
           <i class="fa-solid fa-ranking-star text-amber-400"></i> Peringkat Populasi Negara (Most Population Rank)
@@ -261,7 +263,7 @@
               <tr class="border-b border-slate-800 text-slate-400 uppercase tracking-wider font-semibold">
                 <th class="py-2.5 px-3">Rank</th>
                 <th class="py-2.5 px-3">Bendera & Negara</th>
-                <th class="py-2.5 px-3">Kode Server</th>
+                <th class="py-2.5 px-3">Server Kode</th>
                 <th class="py-2.5 px-3">Total Populasi</th>
                 <th class="py-2.5 px-3">Status Embargo</th>
               </tr>
@@ -278,30 +280,32 @@
         <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-2 flex items-center gap-2">
           <i class="fa-solid fa-scale-balanced text-amber-400"></i> Kebutuhan Negara & Hukum Ekonomi Komoditas (Supply-Demand)
         </h2>
-        <p class="text-xs text-slate-400 mb-4">Barang Melimpah $\rightarrow$ Overload & Murah. Kelangkaan Barang $\rightarrow$ Mahal Ekstrem!</p>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
           <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
             <span class="text-xs font-bold text-rose-400">🔴 Minyak & Energi</span>
-            <p class="text-xs text-slate-400 mt-1">Total Stok Global: <span id="stokMinyak" class="text-white font-mono">0 Unit</span></p>
-            <p class="text-xs text-rose-300 font-semibold mt-1">Dampak Harga: +50% (Mahal)</p>
+            <p class="text-xs text-slate-400 mt-1">Stok Global: <span id="stokMinyak" class="text-white font-mono">1.200 Barel</span></p>
+            <p class="text-xs text-rose-300 font-semibold mt-1">Dampak Harga: +50% (Sangat Langka)</p>
           </div>
           <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
             <span class="text-xs font-bold text-amber-400">🟡 Emas & Tambang</span>
-            <p class="text-xs text-slate-400 mt-1">Total Stok Global: <span id="stokEmas" class="text-white font-mono">0 Unit</span></p>
-            <p class="text-xs text-amber-300 font-semibold mt-1">Dampak Harga: +35% (Sangat Dicari)</p>
+            <p class="text-xs text-slate-400 mt-1">Stok Global: <span id="stokEmas" class="text-white font-mono">5.400 Batang</span></p>
+            <p class="text-xs text-amber-300 font-semibold mt-1">Dampak Harga: +35% (Stabil)</p>
           </div>
           <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
             <span class="text-xs font-bold text-emerald-400">🟢 Pangan & Industri</span>
-            <p class="text-xs text-slate-400 mt-1">Total Stok Global: <span id="stokPangan" class="text-white font-mono">0 Unit</span></p>
-            <p class="text-xs text-emerald-300 font-semibold mt-1">Dampak Harga: Normal (Stabil)</p>
+            <p class="text-xs text-slate-400 mt-1">Stok Global: <span id="stokPangan" class="text-white font-mono">20.000 Ton</span></p>
+            <p class="text-xs text-emerald-300 font-semibold mt-1">Dampak Harga: Normal</p>
           </div>
         </div>
       </section>
 
-      <!-- INVOICE, EXCHANGE & TRANSFER GRID -->
+      <!-- INVOICE, EXCHANGE & TRANSFER -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
         <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-          <h2 class="text-base font-bold text-white mb-1 flex items-center gap-2"><i class="fa-solid fa-file-invoice text-cyan-400"></i> Penerbitan Invoice / Tagihan Massal</h2>
+          <h2 class="text-base font-bold text-white mb-1 flex items-center gap-2">
+            <i class="fa-solid fa-file-invoice text-cyan-400"></i> Penerbitan Invoice / Tagihan Massal
+          </h2>
           <form id="invoiceForm" class="space-y-3 mt-3">
             <select id="invTarget" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
               <option value="ALL">SELURUH PLAYER / NEGARA TERDAFTAR (MASS INVOICE)</option>
@@ -315,7 +319,9 @@
 
         <div class="space-y-6">
           <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-            <h2 class="text-base font-bold text-white mb-1 flex items-center gap-2"><i class="fa-solid fa-right-left text-emerald-400"></i> Exchange Valuta (Tukar Mata Uang)</h2>
+            <h2 class="text-base font-bold text-white mb-1 flex items-center gap-2">
+              <i class="fa-solid fa-right-left text-emerald-400"></i> Exchange Valuta (Tukar Mata Uang)
+            </h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
               <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
                 <span class="text-xs font-bold text-slate-300 block mb-2">Tukar EUPH $\rightarrow$ Uang Lokal</span>
@@ -331,7 +337,9 @@
           </div>
 
           <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-            <h2 class="text-base font-bold text-white mb-1 flex items-center gap-2"><i class="fa-solid fa-paper-plane text-purple-400"></i> Transfer Devisa Antar-Negara</h2>
+            <h2 class="text-base font-bold text-white mb-1 flex items-center gap-2">
+              <i class="fa-solid fa-paper-plane text-purple-400"></i> Transfer Devisa Antar-Negara
+            </h2>
             <form id="transferForm" class="space-y-3 mt-3">
               <select id="transferTarget" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
                 <option value="">-- Pilih Negara Tujuan Transfer --</option>
@@ -343,6 +351,7 @@
             </form>
           </div>
         </div>
+
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -369,8 +378,6 @@
 
     <!-- ================= TAB 2: MARKET & SDA ================= -->
     <div id="content-market" class="tab-content hidden space-y-6">
-      
-      <!-- Gudang & Storage Capacity (Sesuai Gambar Web Lama) -->
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
           <div>
@@ -384,12 +391,12 @@
         </div>
 
         <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 mt-4">
-          <h3 class="text-xs font-bold text-slate-300 uppercase mb-3"><i class="fa-solid fa-boxes-packing text-cyan-400"></i> Input Data SDA Negara (Emas, Besi, Minyak, dll)</h3>
+          <h3 class="text-xs font-bold text-slate-300 uppercase mb-3"><i class="fa-solid fa-boxes-packing text-cyan-400"></i> Input Data SDA Negara</h3>
           <form id="sdaInputForm" class="grid grid-cols-1 md:grid-cols-4 gap-3">
-            <input type="text" id="sdaName" placeholder="Contoh: Besi / Emas / Minyak" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
-            <input type="number" id="sdaQty" placeholder="Contoh: 50" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
-            <input type="text" id="sdaUnit" placeholder="Contoh: Ton / Barel / Batang" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
-            <button type="submit" class="py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl text-xs transition">Simpan ke Gudang Negara</button>
+            <input type="text" id="sdaName" placeholder="Contoh: Besi / Emas" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
+            <input type="number" id="sdaQty" placeholder="Jumlah" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
+            <input type="text" id="sdaUnit" placeholder="Satuan (Ton/Barel)" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
+            <button type="submit" class="py-2 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl text-xs transition">Simpan ke Gudang</button>
           </form>
         </div>
 
@@ -403,11 +410,11 @@
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-          <h2 class="text-base font-bold text-white mb-3 flex items-center gap-2"><i class="fa-solid fa-store text-emerald-400"></i> Buat Lapak Penjualan Manual (Gunakan Kode Resi Resmimu)</h2>
+          <h2 class="text-base font-bold text-white mb-3 flex items-center gap-2"><i class="fa-solid fa-store text-emerald-400"></i> Buat Lapak Penjualan Manual</h2>
           <form id="lapakForm" class="space-y-3">
             <input type="text" id="lapakItem" placeholder="Misal: 34 Barel Minyak Bumi" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
             <input type="number" id="lapakPrice" placeholder="Harga Jual (Nominal EUPH)" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-cyan-300">
-            <input type="text" id="lapakResi" placeholder="Tempelkan Kode Resi Nota Bank Anda (WCB-AUTH-...)" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
+            <input type="text" id="lapakResi" placeholder="Kode Resi Nota Bank Anda" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
             <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm transition">Pasang Lapak Penjualan</button>
           </form>
         </div>
@@ -417,50 +424,54 @@
           <div id="marketKatalogList" class="space-y-3 max-h-64 overflow-y-auto"></div>
         </div>
       </div>
-
     </div>
 
     <!-- ================= TAB 3: PERUSAHAAN & INVESTASI ================= -->
     <div id="content-company" class="tab-content hidden space-y-6">
       
+      <!-- LAYAR PROYEKSI GRAFIK BURSA PERUSAHAAN (INTERAKTIF) -->
+      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+        <h2 class="text-base font-bold text-white mb-3 flex items-center gap-2">
+          <i class="fa-solid fa-chart-area text-cyan-400"></i> Layar Proyeksi Grafik Tren Bursa Perusahaan (Interactive Chart)
+        </h2>
+        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 h-64">
+          <canvas id="bursaChartCanvas"></canvas>
+        </div>
+      </section>
+
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-          <h2 class="text-base font-bold text-white mb-1 flex items-center gap-2"><i class="fa-solid fa-building-user text-purple-400"></i> Pendirian Perusahaan (Modal Wajib 200.000 EUPH)</h2>
-          <p class="text-xs text-slate-400 mb-4">Paket lengkap pendirian perusahaan otomatis memberikan **Investasi Pribadi senilai 20.000 EUPH**. (Auto Invest: +20k Euph)</p>
-          
+          <h2 class="text-base font-bold text-white mb-1 flex items-center gap-2"><i class="fa-solid fa-building-user text-purple-400"></i> Pendirian Perusahaan (Modal 200.000 EUPH)</h2>
+          <p class="text-xs text-slate-400 mb-4">Mendapatkan Auto Invest 20.000 EUPH & meningkatkan indikator kesejahteraan.</p>
           <form id="companyForm" class="space-y-3">
-            <input type="text" id="compName" placeholder="Contoh: Euphonia Tech Corp" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
-            <input type="text" id="compSector" placeholder="Contoh: Militer / Teknologi / Energi" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
-            <button type="submit" class="w-full py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-500 text-white font-semibold rounded-xl text-sm transition">Mulai Dirikan Perusahaan (200.000 EUPH)</button>
+            <input type="text" id="compName" placeholder="Nama Perusahaan" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
+            <input type="text" id="compSector" placeholder="Sektor (Militer / Teknologi)" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
+            <button type="submit" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl text-sm transition">Mulai Dirikan Perusahaan (200k EUPH)</button>
           </form>
         </section>
 
+        <!-- INVESTASI SOBERBOND / OBLIGASI NEGARA -->
         <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-          <h2 class="text-base font-bold text-white mb-1 flex items-center gap-2"><i class="fa-solid fa-file-contract text-emerald-400"></i> Penerbitan Obligasi & Surat Hutang Negara (Sovereign Bonds)</h2>
-          <p class="text-xs text-slate-400 mb-4">Terbitkan surat hutang resmi pembangunan untuk mendulang dana segar dari negara lain.</p>
-          
+          <h2 class="text-base font-bold text-white mb-1 flex items-center gap-2"><i class="fa-solid fa-file-contract text-emerald-400"></i> Penerbitan Obligasi & Investasi Luar Negeri</h2>
+          <p class="text-xs text-slate-400 mb-4">Terbitkan surat hutang resmi atau investasikan devisa ke perusahaan luar negeri.</p>
           <form id="bondForm" class="space-y-3">
-            <input type="number" id="bondAmount" placeholder="Total Nilai Obligasi (Contoh: 100000 EUPH)" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-cyan-300">
-            <input type="number" step="0.1" id="bondInterest" placeholder="Bunga Per Tahun (%) - Contoh: 5" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
-            <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm transition">Terbitkan Obligasi Resmi</button>
+            <input type="number" id="bondAmount" placeholder="Total Nilai Obligasi (EUPH)" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-cyan-300">
+            <input type="number" step="0.1" id="bondInterest" placeholder="Bunga Per Tahun (%)" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
+            <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm transition">Terbitkan Obligasi Resmi</button>
           </form>
         </section>
       </div>
 
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h2 class="text-base font-bold text-white mb-3 flex items-center gap-2"><i class="fa-solid fa-chart-line text-cyan-400"></i> Bursa Perusahaan & Peluang Investasi Active</h2>
-        <div id="bursaListMember" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 text-slate-500 italic text-xs">Belum ada perusahaan terdaftar di bursa.</div>
-        </div>
+        <div id="bursaListMember" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
       </section>
-
     </div>
 
     <!-- ================= TAB 4: PAJAK DIPLOMATIK ================= -->
     <div id="content-pajak" class="tab-content hidden space-y-6">
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h2 class="text-base font-bold text-white mb-1 flex items-center gap-2"><i class="fa-solid fa-percent text-purple-400"></i> Tarif Pajak Internasional WCB</h2>
-        <p class="text-xs text-slate-400 mb-4">Pajak Internasional diatur acak/langsung oleh Admin Vault untuk seluruh transaksi perdagangan lintas negara.</p>
         <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-cyan-400 font-bold text-sm mb-6">
           Global Tax Rate: <span id="globalTaxDisplay">5% All Transactions</span>
         </div>
@@ -473,15 +484,10 @@
           <input type="number" max="1000" id="pajakRate" placeholder="Persentase Pajak Bilateral (%) [Max 1000%]" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
           <button type="submit" class="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl text-sm transition">Terapkan Pajak Bilateral</button>
         </form>
-
-        <div class="mt-6">
-          <h4 class="text-xs font-bold text-slate-300 uppercase mb-2">Daftar Aturan Pajak Bilateral Aktif</h4>
-          <div id="pajakBilateralList" class="space-y-2 text-xs font-mono text-slate-400">Belum ada pajak bilateral khusus yang diterapkan.</div>
-        </div>
       </section>
     </div>
 
-    <!-- ================= TAB 5: KERJASAMA & EMBARGO ================= -->
+    <!-- ================= TAB 5: KERJASAMA & EMBARGO (12 SEKTOR) ================= -->
     <div id="content-diplomacy" class="tab-content hidden space-y-6">
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h2 class="text-base font-bold text-white mb-1 flex items-center gap-2"><i class="fa-solid fa-dove text-cyan-400"></i> Pesan Diplomatik & Proposal Kerjasama Negara</h2>
@@ -489,22 +495,33 @@
           <select id="treatyTarget" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
             <option value="">-- Pilih Negara Tujuan Kerjasama --</option>
           </select>
+          
+          <!-- 12 SEKTOR KERJASAMA DIPLOMATIK -->
           <select id="treatyField" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
             <option value="Sektor Industri & Teknologi">🏭 Sektor Industri & Teknologi</option>
             <option value="Sektor Militer & Pertahanan">⚔️ Sektor Militer & Pertahanan</option>
             <option value="Sektor Keuangan & Perdagangan">📈 Sektor Keuangan & Perdagangan</option>
+            <option value="Sektor Politik & Aliansi Geopolitik">🌐 Sektor Politik & Aliansi Geopolitik</option>
+            <option value="Sektor Pendidikan & Riset CNU Academy">🎓 Sektor Pendidikan & Riset CNU Academy</option>
+            <option value="Sektor Sumber Daya Alam & Energi">⚡ Sektor Sumber Daya Alam & Energi</option>
+            <option value="Sektor Kesehatan & Kesejahteraan">🏥 Sektor Kesehatan & Kesejahteraan</option>
+            <option value="Sektor Kebudayaan & Pariwisata">🎨 Sektor Kebudayaan & Pariwisata</option>
+            <option value="Sektor Antariksa & Teknologi Penerbangan">🚀 Sektor Antariksa & Teknologi Penerbangan</option>
+            <option value="Sektor Siber & Keamanan Informasi">🔒 Sektor Siber & Keamanan Informasi</option>
+            <option value="Sektor Transportasi & Logistik Global">🚢 Sektor Transportasi & Logistik Global</option>
+            <option value="Sektor Hukum & Perjanjian Internasional">📜 Sektor Hukum & Perjanjian Internasional</option>
           </select>
+
           <input type="text" id="treatyTitle" placeholder="Judul Perjanjian / Pakta Kerjasama" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
           <textarea id="treatyDesc" rows="3" placeholder="Poin-poin penting perjanjian diplomatik..." required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white"></textarea>
           <button type="submit" class="w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl text-sm transition">Kirim Proposal Diplomatik</button>
         </form>
       </section>
 
+      <!-- Central Audit Ledger -->
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h2 class="text-base font-bold text-white mb-2 flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left text-cyan-400"></i> Central Audit Ledger (Transparansi Transaksi Global)</h2>
-        <div id="auditLedgerListMember" class="space-y-2 max-h-48 overflow-y-auto font-mono text-xs text-slate-400 bg-slate-950 p-4 rounded-xl border border-slate-800">
-          Memuat riwayat transaksi global...
-        </div>
+        <div id="auditLedgerListMember" class="space-y-2 max-h-48 overflow-y-auto font-mono text-xs text-slate-400 bg-slate-950 p-4 rounded-xl border border-slate-800"></div>
       </section>
     </div>
 
