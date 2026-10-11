@@ -59,7 +59,7 @@
             <h1 class="text-lg font-bold tracking-wider text-white flex items-center gap-2">
               WCB SOVEREIGN VAULT <span class="bg-cyan-500/20 text-cyan-300 text-xs px-2 py-0.5 rounded-full border border-cyan-500/30 font-mono">ADMIN PANEL</span>
             </h1>
-            <p class="text-xs text-slate-400">Kontrol Kebijakan Moneter, Gudang SDA, Bursa, Audit & Direct Injection</p>
+            <p class="text-xs text-slate-400">Kontrol Kebijakan Moneter, Gudang SDA, Lisensi Server, Audit & Injection</p>
           </div>
         </div>
         <a href="index.html" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-semibold text-slate-300 transition">
@@ -70,7 +70,17 @@
 
     <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
 
-      <!-- 1. MANAJEMEN BURSA & PERUSAHAAN (MAJU / HAPUS) -->
+      <!-- LISENSI SERVER KOMUNITAS TERDAFTAR -->
+      <section class="bg-slate-900/60 border border-orange-500/30 rounded-2xl p-6">
+        <h2 class="text-sm font-bold text-orange-300 uppercase tracking-wider mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-server text-orange-400"></i> PERMOHONAN SEWA SERVER KOMUNITAS (RP 5.000)
+        </h2>
+        <div id="serverPendingList" class="space-y-3">
+          <p class="text-xs text-slate-500 italic">Belum ada pendaftaran server komunitas baru.</p>
+        </div>
+      </section>
+
+      <!-- MANAJEMEN BURSA & PERUSAHAAN -->
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
           <i class="fa-solid fa-building text-cyan-400"></i> MANAJEMEN BURSA & PERUSAHAAN (MAJU / HAPUS)
@@ -78,7 +88,7 @@
         <div id="bursaListAdmin" class="space-y-2 text-xs text-slate-400 italic">Belum ada perusahaan berdiri.</div>
       </section>
 
-      <!-- 2. KENDALI GUDANG & SDA NEGARA -->
+      <!-- KENDALI GUDANG & SDA NEGARA -->
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
           <i class="fa-solid fa-boxes-stacked text-amber-400"></i> KENDALI GUDANG & SDA NEGARA
@@ -104,7 +114,7 @@
         </form>
       </section>
 
-      <!-- 3. REGULASI VALUTA & NILAI TUKAR (KURS PLAYER) -->
+      <!-- REGULASI VALUTA & KURS PLAYER -->
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
           <i class="fa-solid fa-coins text-emerald-400"></i> REGULASI VALUTA & NILAI TUKAR (KURS PLAYER)
@@ -131,7 +141,7 @@
         </form>
       </section>
 
-      <!-- 4. ATUR PAJAK INTERNASIONAL GLOBAL -->
+      <!-- ATUR PAJAK INTERNASIONAL GLOBAL -->
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
           <i class="fa-solid fa-percent text-purple-400"></i> ATUR PAJAK INTERNASIONAL GLOBAL (ACAK / FLAT)
@@ -142,7 +152,7 @@
         </form>
       </section>
 
-      <!-- 5. KELOLA KATALOG GLOBAL MARKET -->
+      <!-- KELOLA KATALOG GLOBAL MARKET -->
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
           <i class="fa-solid fa-cart-shopping text-cyan-400"></i> KELOLA KATALOG GLOBAL MARKET
@@ -161,7 +171,7 @@
         <div id="marketItemListAdmin" class="space-y-2"></div>
       </section>
 
-      <!-- 6. MANAJEMEN AKUN NEGARA -->
+      <!-- MANAJEMEN AKUN NEGARA -->
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
           <i class="fa-solid fa-user-gear text-rose-400"></i> MANAJEMEN AKUN NEGARA (PERINGATAN / FREEZE / HAPUS)
@@ -169,7 +179,7 @@
         <div id="adminAccountList" class="space-y-3"></div>
       </section>
 
-      <!-- 7. PERMOHONAN PINJAMAN MEMBER -->
+      <!-- PERMOHONAN PINJAMAN MEMBER -->
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
           <i class="fa-solid fa-file-circle-check text-purple-400"></i> PERMOHONAN PINJAMAN MEMBER
@@ -177,7 +187,7 @@
         <div id="loanPendingList" class="space-y-2 text-xs text-slate-400 italic">Tidak ada pengajuan pinjaman pending.</div>
       </section>
 
-      <!-- 8. DIRECT SALDO INJECTION -->
+      <!-- DIRECT SALDO INJECTION -->
       <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
         <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
           <i class="fa-solid fa-syringe text-emerald-400"></i> DIRECT SALDO INJECTION
@@ -192,7 +202,7 @@
         </form>
       </section>
 
-      <!-- 9. CRISIS EVENT TRIGGER (6 SKENARIO) -->
+      <!-- CRISIS EVENT TRIGGER (6 SKENARIO) -->
       <section class="bg-slate-900/60 border border-rose-500/30 rounded-2xl p-6">
         <h2 class="text-sm font-bold text-rose-300 uppercase tracking-wider mb-2 flex items-center gap-2">
           <i class="fa-solid fa-bolt text-rose-400"></i> CRISIS EVENT TRIGGER (6 SKENARIO GLOBAL)
