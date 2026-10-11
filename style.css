@@ -1,11 +1,85 @@
-/* Custom Scrollbar & Global Styles for World Central Bank */
+/* ==========================================================
+   CNU SOVEREIGN NETWORK - CUSTOM CYBER THEME & NEON STYLING
+   ========================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap');
+
+:root {
+  --bg-dark: #060911;
+  --card-bg: #0f172a;
+  --neon-cyan: #06b6d4;
+  --neon-orange: #f97316;
+  --neon-purple: #a855f7;
+  --neon-emerald: #10b981;
+}
+
+body {
+  background-color: var(--bg-dark);
+  color: #f8fafc;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Cyber Background Grid Animation */
+body::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0; left: 0; bottom: 0; right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  z-index: 999;
+  background-size: 100% 3px, 3px 100%;
+  pointer-events: none;
+}
+
+/* Neon Glow Card Borders */
+.neon-border-cyan {
+  border: 1px solid rgba(6, 182, 212, 0.5);
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.25), inset 0 0 10px rgba(6, 182, 212, 0.1);
+}
+
+.neon-border-orange {
+  border: 1px solid rgba(249, 115, 22, 0.5);
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.25), inset 0 0 10px rgba(249, 115, 22, 0.1);
+}
+
+.neon-border-purple {
+  border: 1px solid rgba(168, 85, 247, 0.5);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.25), inset 0 0 10px rgba(168, 85, 247, 0.1);
+}
+
+/* Sparkle Button Animation */
+.btn-sparkle {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+  z-index: 1;
+}
+
+.btn-sparkle::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%; width: 200%; height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: rotate(45deg);
+  transition: all 0.6s ease;
+  z-index: -1;
+}
+
+.btn-sparkle:hover::before {
+  left: 100%;
+  top: 100%;
+}
+
+/* Custom Scrollbar for Cyber Look */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0b0f19;
+  background: #060911;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -14,37 +88,13 @@
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #06b6d4;
 }
 
-body {
-  background-color: #0a0e17;
-  color: #f1f5f9;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-}
-
-/* Animasi Zoom & Hover Effect yang Halus */
-.zoom-effect {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.zoom-effect:hover {
-  transform: translateY(-3px) scale(1.01);
-  box-shadow: 0 10px 25px -5px rgba(6, 182, 212, 0.2);
-}
-
-/* Kustomisasi Warna Kotak Portal Auth */
-.portal-box-login {
-  background: linear-gradient(135deg, rgba(30, 58, 138, 0.4), rgba(15, 23, 42, 0.9));
-  border-color: rgba(59, 130, 246, 0.4);
-}
-
-.portal-box-register {
-  background: linear-gradient(135deg, rgba(8, 145, 178, 0.3), rgba(15, 23, 42, 0.9));
-  border-color: rgba(6, 182, 212, 0.4);
-}
-
-.portal-box-server {
-  background: linear-gradient(135deg, rgba(159, 18, 57, 0.3), rgba(15, 23, 42, 0.9));
-  border-color: rgba(244, 63, 94, 0.4);
+/* Glassmorphism Elements */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
