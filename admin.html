@@ -47,7 +47,7 @@
 
     <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
 
-      <!-- PERSETUJUAN SEWA SERVER KOMUNITAS -->
+      <!-- PERSETUJUAN SEWA SERVER -->
       <section class="neon-box rounded-2xl p-6">
         <h2 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-3 flex items-center gap-2"><i class="fa-solid fa-server"></i> Persetujuan Sewa Server Komunitas Luar</h2>
         <div id="serverRequestsList" class="space-y-3">
@@ -55,7 +55,7 @@
         </div>
       </section>
 
-      <!-- 12 SKENARIO KRISIS (TERMASUK PANDEMI VIRUS) -->
+      <!-- 12 SKENARIO KRISIS -->
       <section class="neon-box rounded-2xl p-6 border-rose-500/40">
         <h2 class="text-sm font-bold text-rose-300 uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bolt text-rose-400"></i> Crisis Event Trigger (12 Skenario Global)</h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
@@ -75,12 +75,6 @@
         <button onclick="resetCrisis()" class="mt-3 px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-xl">Normalisasi Krisis</button>
       </section>
 
-      <!-- MANAJEMEN BURSA & PERUSAHAAN -->
-      <section class="neon-box rounded-2xl p-6">
-        <h2 class="text-sm font-bold text-slate-200 uppercase mb-3"><i class="fa-solid fa-building text-cyan-400"></i> Manajemen Bursa & Perusahaan (Maju / Hapus)</h2>
-        <div id="bursaListAdmin" class="space-y-2 text-xs text-slate-400 italic">Belum ada perusahaan berdiri.</div>
-      </section>
-
       <!-- KENDALI GUDANG & SDA -->
       <section class="neon-box rounded-2xl p-6">
         <h2 class="text-sm font-bold text-slate-200 uppercase mb-3"><i class="fa-solid fa-boxes-stacked text-amber-400"></i> Kendali Gudang & SDA Negara</h2>
@@ -96,28 +90,9 @@
         </form>
       </section>
 
-      <!-- REGULASI VALUTA -->
-      <section class="neon-box rounded-2xl p-6">
-        <h2 class="text-sm font-bold text-slate-200 uppercase mb-3"><i class="fa-solid fa-coins text-emerald-400"></i> Regulasi Valuta & Nilai Tukar (Kurs Player)</h2>
-        <form id="kursForm" class="space-y-4">
-          <select id="kursCountrySelect" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
-            <option value="">-- Pilih Negara --</option>
-          </select>
-          <div class="grid grid-cols-2 gap-4">
-            <input type="number" step="0.01" id="kursEuph" value="1" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-cyan-300">
-            <input type="number" id="kursLocal" placeholder="Uang Lokal" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
-          </div>
-          <div class="flex gap-3">
-            <button type="button" onclick="adjustKurs('kuat')" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs">📈 Kuatkan (+10%)</button>
-            <button type="button" onclick="adjustKurs('lemah')" class="px-4 py-2 bg-rose-600 text-white rounded-xl text-xs">📉 Lemahkan (-10%)</button>
-            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs">Set Kurs</button>
-          </div>
-        </form>
-      </section>
-
       <!-- PERMOHONAN PINJAMAN MEMBER -->
       <section class="neon-box rounded-2xl p-6">
-        <h2 class="text-sm font-bold text-slate-200 uppercase mb-3"><i class="fa-solid fa-file-circle-check text-purple-400"></i> Permohonan Pinjaman Member</h2>
+        <h2 class="text-sm font-bold text-slate-200 uppercase mb-3"><i class="fa-solid fa-file-circle-check text-purple-400"></i> Permohonan Pinjaman Member (ACC / Tolak)</h2>
         <div id="loanPendingList" class="space-y-2 text-xs text-slate-400 italic">Tidak ada pengajuan pinjaman.</div>
       </section>
 
@@ -136,7 +111,7 @@
 
       <!-- MANAJEMEN AKUN NEGARA -->
       <section class="neon-box rounded-2xl p-6">
-        <h2 class="text-sm font-bold text-slate-200 uppercase mb-3"><i class="fa-solid fa-user-gear text-rose-400"></i> Manajemen Akun Negara (Warning / Freeze / Hapus)</h2>
+        <h2 class="text-sm font-bold text-slate-200 uppercase mb-3"><i class="fa-solid fa-user-gear text-rose-400"></i> Manajemen Akun Negara</h2>
         <div id="adminAccountList" class="space-y-3"></div>
       </section>
 
