@@ -49,7 +49,7 @@ function initMemberPortal() {
     if (activeUser.flag) document.getElementById('countryFlagBox').innerHTML = `<img src="${activeUser.flag}" class="w-full h-full object-cover rounded-lg">`;
   }
 
-  // KOTAK 1: LOGIN MEMBER FORM
+  // KOTAK 1: LOGIN
   const loginForm = document.getElementById('authBox1');
   if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
@@ -78,7 +78,7 @@ function initMemberPortal() {
     });
   }
 
-  // KOTAK 2: REGISTRASI AKUN NEGARA FORM
+  // KOTAK 2: REGISTER AKUN NEGARA (MAX 10 JUTA + GETAR HP)
   const regForm = document.getElementById('authBox2');
   if (regForm) {
     regForm.addEventListener('submit', (e) => {
@@ -114,14 +114,13 @@ function initMemberPortal() {
     });
   }
 
-  // KOTAK 3: SEWA SERVER KOMUNITAS LUAR FORM
+  // KOTAK 3: SEWA SERVER
   const serverForm = document.getElementById('authBox3');
   if (serverForm) {
     serverForm.addEventListener('submit', (e) => {
       e.preventDefault();
       const serverName = document.getElementById('serverName').value.trim();
       const serverProof = document.getElementById('serverProof').value.trim();
-      const serverTheme = document.getElementById('serverTheme').value;
       const accessCode = document.getElementById('serverAccessCode').value.trim();
 
       if (accessCode === "2026") {
@@ -131,7 +130,7 @@ function initMemberPortal() {
       }
 
       db.ref('server_requests').push({
-        serverName, serverProof, serverTheme, timestamp: Date.now()
+        serverName, serverProof, timestamp: Date.now()
       }).then(() => {
         alert("Pengajuan sewa server berhasil dikirim ke Admin Guill!");
       });
@@ -158,7 +157,7 @@ function initMemberPortal() {
     });
   });
 
-  // INPUT DATA SDA FORM
+  // INPUT SDA & GUDANG
   const sdaForm = document.getElementById('sdaInputForm');
   if (sdaForm) {
     sdaForm.addEventListener('submit', (e) => {
@@ -184,15 +183,90 @@ function initMemberPortal() {
       });
     });
   }
+
+  // OBLIGASI NEGARA
+  const bondForm = document.getElementById('bondForm');
+  if (bondForm) {
+    bondForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!activeUser) return;
+      const amount = Number(document.getElementById('bondAmount').value);
+      const interest = Number(document.getElementById('bondInterest').value);
+
+      db.ref('sovereign_bonds').push({
+        country: activeUser.country, amount, interest, timestamp: Date.now()
+      }).then(() => {
+        addAuditLog(`${activeUser.country} menerbitkan Surat Hutang Senilai ${amount} EUPH (${interest}%)`);
+        alert("Obligasi berhasil diterbitkan ke pasar global!");
+        bondForm.reset();
+      });
+    });
+  }
+
+  // PROPOSAL KERJASAMA
+  const treatyForm = document.getElementById('treatyForm');
+  if (treatyForm) {
+    treatyForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!activeUser) return;
+      const target = document.getElementById('treatyTarget').value;
+      const field = document.getElementById('treatyField').value;
+      const title = document.getElementById('treatyTitle').value.trim();
+      const desc = document.getElementById('treatyDesc').value.trim();
+
+      db.ref(`treaty_proposals/${target}`).push({
+        fromCountry: activeUser.country, fromKey: activeUser.key, field, title, desc, status: 'Pending', timestamp: Date.now()
+      }).then(() => {
+        addAuditLog(`Proposal Kerjasama (${field}) dikirim dari ${activeUser.country}`);
+        alert("Proposal Kerjasama berhasil dikirim ke negara tujuan!");
+        treatyForm.reset();
+      });
+    });
+  }
+
+  // LIST PROPOSAL MASUK
+  if (activeUser) {
+    db.ref(`treaty_proposals/${activeUser.key}`).on('value', snap => {
+      const data = snap.val() || {};
+      const container = document.getElementById('treatyInboxList');
+      if (!container) return;
+      container.innerHTML = '';
+      const keys = Object.keys(data);
+      if (keys.length === 0) {
+        container.innerHTML = '<p class="text-slate-500 italic">Belum ada proposal kerjasama masuk.</p>';
+        return;
+      }
+      keys.forEach(k => {
+        const p = data[k];
+        container.innerHTML += `
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center">
+            <div>
+              <span class="text-cyan-400 font-bold">${p.fromCountry} (${p.field})</span>
+              <p class="text-white font-semibold">${p.title}</p>
+              <p class="text-slate-400 text-[11px]">${p.desc}</p>
+            </div>
+            <div>
+              ${p.status === 'Pending' ? `<button onclick="accTreaty('${activeUser.key}', '${k}')" class="px-3 py-1 bg-emerald-600 text-white rounded-lg">ACC</button>` : `<span class="text-emerald-400 font-bold">DITERIMA</span>`}
+            </div>
+          </div>`;
+      });
+    });
+  }
 }
 
-// LOGOUT FUNCTION FIX TOTAL
+function accTreaty(myKey, propKey) {
+  db.ref(`treaty_proposals/${myKey}/${propKey}/status`).set('Accepted');
+  addAuditLog(`Perjanjian Kerjasama berhasil di-ACC!`);
+  alert("Proposal Berhasil Disetujui (ACC)!");
+}
+
+// LOGOUT FIX TOTAL
 function logoutMember() {
   localStorage.removeItem('wcb_active_user');
   window.location.href = 'index.html';
 }
 
-// TICKER POPULASI DENGAN PERSENTASE KESEJAHTERAAN
+// TICKER POPULASI DENGAN KESEJAHTERAAN & KRISIS VIRUS
 function startPopulationTicker() {
   setInterval(() => {
     if (activeUser && activeUser.key) {
@@ -202,7 +276,14 @@ function startPopulationTicker() {
 
   setInterval(() => {
     if (activeUser && activeUser.key) {
-      db.ref(`monetary_data/${activeUser.key}/population`).transaction(cur => Math.max(0, (cur || 0) - 35));
+      db.ref('crisis_status').once('value').then(snap => {
+        const crisis = snap.val() || {};
+        let deathDeduction = 35;
+        if (crisis.active && crisis.title === 'PANDEMI VIRUS GLOBAL') {
+          deathDeduction = 1500; // Mati massal dalam hitungan jam
+        }
+        db.ref(`monetary_data/${activeUser.key}/population`).transaction(cur => Math.max(0, (cur || 0) - deathDeduction));
+      });
     }
   }, 3600000);
 }
@@ -323,4 +404,124 @@ function initBursaChart() {
 
 function addAuditLog(text) {
   db.ref('audit_ledger').push({ text, timestamp: Date.now() });
+}
+
+// ADMIN VAULT LOGIC (PIN 272727)
+function initAdminVault() {
+  const pinInput = document.getElementById('adminPinInput');
+  if (pinInput) {
+    pinInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') verifyAdminPin();
+    });
+  }
+}
+
+function verifyAdminPin() {
+  const pin = document.getElementById('adminPinInput').value.trim();
+  if (pin === ADMIN_PIN) {
+    document.getElementById('adminAuthModal').classList.add('hidden');
+    document.getElementById('adminDashboardContent').classList.remove('hidden');
+    loadAdminVaultData();
+  } else {
+    document.getElementById('authError').textContent = "PIN SALAH!";
+  }
+}
+
+function loadAdminVaultData() {
+  db.ref('monetary_data').on('value', snap => {
+    const data = snap.val() || {};
+    populateAdminSelects(data);
+    renderAdminAccounts(data);
+  });
+
+  db.ref('server_requests').on('value', snap => {
+    const reqs = snap.val() || {};
+    const container = document.getElementById('serverRequestsList');
+    if (!container) return;
+    container.innerHTML = '';
+    const keys = Object.keys(reqs);
+    if (keys.length === 0) {
+      container.innerHTML = '<p class="text-xs text-slate-500 italic">Tidak ada permohonan sewa server.</p>';
+      return;
+    }
+    keys.forEach(k => {
+      const r = reqs[k];
+      container.innerHTML += `
+        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center text-xs font-mono">
+          <div>
+            <span class="text-white font-bold text-sm">${r.serverName}</span>
+            <p class="text-slate-400"><a href="${r.serverProof}" target="_blank" class="text-cyan-400 underline">Bukti Transfer</a></p>
+          </div>
+          <button onclick="approveServer('${k}', '${r.serverName}')" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg">ACC & Kirim Kode</button>
+        </div>`;
+    });
+  });
+}
+
+function approveServer(key, name) {
+  const code = Math.floor(1000 + Math.random() * 9000);
+  alert(`Server ${name} disetujui! Kode akses 4-angka: ${code}`);
+  db.ref(`server_requests/${key}`).remove();
+  addAuditLog(`ADMIN: Menyetujui server ${name} (Kode: ${code})`);
+}
+
+function populateAdminSelects(data) {
+  const sdaSelect = document.getElementById('sdaCountrySelect');
+  const kursSelect = document.getElementById('kursCountrySelect');
+  const injectSelect = document.getElementById('injectCountrySelect');
+  if (sdaSelect) sdaSelect.innerHTML = '<option value="">-- Pilih Negara --</option>';
+  if (kursSelect) kursSelect.innerHTML = '<option value="">-- Pilih Negara --</option>';
+  if (injectSelect) injectSelect.innerHTML = '<option value="">-- Pilih Negara --</option>';
+
+  Object.keys(data).forEach(k => {
+    const c = data[k].country;
+    if (sdaSelect) sdaSelect.innerHTML += `<option value="${k}">${c}</option>`;
+    if (kursSelect) kursSelect.innerHTML += `<option value="${k}">${c}</option>`;
+    if (injectSelect) injectSelect.innerHTML += `<option value="${k}">${c}</option>`;
+  });
+}
+
+function renderAdminAccounts(data) {
+  const c = document.getElementById('adminAccountList');
+  if (!c) return;
+  c.innerHTML = '';
+  Object.keys(data).forEach(k => {
+    const item = data[k];
+    c.innerHTML += `
+      <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+        <div><strong class="text-white">${item.country}</strong> (${item.currency}) - Saldo: ${item.devisa || 0} EUPH | Warn: ${item.warnings || 0}/3</div>
+        <div class="flex gap-2">
+          <button onclick="addWarning('${k}', ${(item.warnings || 0) + 1})" class="px-3 py-1 bg-amber-600 text-white rounded-lg">+ Warn</button>
+          <button onclick="freezeAccount('${k}', '${item.status === 'Frozen' ? 'Active' : 'Frozen'}')" class="px-3 py-1 bg-rose-600 text-white rounded-lg">${item.status === 'Frozen' ? 'Cairkan' : 'Freeze'}</button>
+          <button onclick="deleteAccount('${k}')" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-lg">Hapus</button>
+        </div>
+      </div>`;
+  });
+}
+
+function addWarning(key, count) {
+  db.ref(`monetary_data/${key}/warnings`).set(count);
+  addAuditLog(`ADMIN: Beri warning ke account ID ${key}`);
+}
+
+function freezeAccount(key, status) {
+  db.ref(`monetary_data/${key}/status`).set(status);
+  addAuditLog(`ADMIN: Ubah status account ke ${status}`);
+}
+
+function deleteAccount(key) {
+  if (confirm("Hapus negara ini?")) db.ref(`monetary_data/${key}`).remove();
+}
+
+function triggerCrisis(type) {
+  let title = type.toUpperCase();
+  if (type === 'pandemi') title = 'PANDEMI VIRUS GLOBAL';
+  db.ref('crisis_status').set({ active: true, title, timestamp: Date.now() });
+  addAuditLog(`ADMIN CRISIS: Memicu ${title}`);
+  alert(`Krisis ${title} Berhasil Dipicu!`);
+}
+
+function resetCrisis() {
+  db.ref('crisis_status').set({ active: false });
+  alert("Krisis Dinormalisasi.");
 }
