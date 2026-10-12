@@ -15,7 +15,6 @@ const db = firebase.database();
 const ADMIN_PIN = "272727";
 
 let activeUser = JSON.parse(localStorage.getItem('wcb_active_user')) || null;
-let bursaChartInstance = null;
 
 document.addEventListener('DOMContentLoaded', () => {
   if (document.getElementById('content-bank')) {
@@ -26,11 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-// 3 KOTAK AUTH SWITCH
+// SWITCH 3 KOTAK PORTAL AUTH
 function switchAuthBox(boxNum) {
   document.getElementById('authBox1').classList.add('hidden');
   document.getElementById('authBox2').classList.add('hidden');
   document.getElementById('authBox3').classList.add('hidden');
+
   document.getElementById('box1Btn').className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition";
   document.getElementById('box2Btn').className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition";
   document.getElementById('box3Btn').className = "py-2.5 rounded-lg text-slate-400 hover:text-white transition";
@@ -49,85 +49,94 @@ function initMemberPortal() {
     if (activeUser.flag) document.getElementById('countryFlagBox').innerHTML = `<img src="${activeUser.flag}" class="w-full h-full object-cover rounded-lg">`;
   }
 
-  // Box 1: Login
-  document.getElementById('loginForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const country = document.getElementById('loginCountry').value.trim();
-    const pin = document.getElementById('loginPin').value.trim();
+  // KOTAK 1: LOGIN MEMBER FORM
+  const loginForm = document.getElementById('authBox1');
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const country = document.getElementById('loginCountry').value.trim();
+      const pin = document.getElementById('loginPin').value.trim();
 
-    db.ref('monetary_data').once('value').then(snap => {
-      const data = snap.val() || {};
-      let foundKey = null;
-      Object.keys(data).forEach(k => {
-        if (data[k].country.toLowerCase() === country.toLowerCase() && String(data[k].pin) === String(pin)) {
-          foundKey = k;
+      db.ref('monetary_data').once('value').then(snap => {
+        const data = snap.val() || {};
+        let foundKey = null;
+        Object.keys(data).forEach(k => {
+          if (data[k].country.toLowerCase() === country.toLowerCase() && String(data[k].pin) === String(pin)) {
+            foundKey = k;
+          }
+        });
+        if (foundKey) {
+          if (data[foundKey].status === 'Frozen') return alert("⚠️ AKUN DIBEKUKAN ADMIN!");
+          activeUser = { key: foundKey, ...data[foundKey] };
+          localStorage.setItem('wcb_active_user', JSON.stringify(activeUser));
+          document.getElementById('authModal').classList.add('hidden');
+          location.reload();
+        } else {
+          alert("Nama Negara atau PIN Salah!");
         }
       });
-      if (foundKey) {
-        if (data[foundKey].status === 'Frozen') return alert("⚠️ AKUN DIBEKUKAN ADMIN!");
-        activeUser = { key: foundKey, ...data[foundKey] };
-        localStorage.setItem('wcb_active_user', JSON.stringify(activeUser));
-        document.getElementById('authModal').classList.add('hidden');
-        location.reload();
-      } else {
-        alert("Nama Negara atau PIN Salah!");
+    });
+  }
+
+  // KOTAK 2: REGISTRASI AKUN NEGARA FORM
+  const regForm = document.getElementById('authBox2');
+  if (regForm) {
+    regForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const country = document.getElementById('regCountry').value.trim();
+      const leader = document.getElementById('regLeader').value.trim();
+      const currency = document.getElementById('regCurrency').value.trim();
+      const flag = document.getElementById('regFlag').value.trim();
+      const community = document.getElementById('regCommunity').value.trim();
+      const popInput = document.getElementById('regPopulation');
+      const pop = Number(popInput.value);
+      const pin = document.getElementById('regPin').value.trim();
+
+      if (pop > 10000000) {
+        if ("vibrate" in navigator) navigator.vibrate([300, 100, 300, 100, 500]);
+        popInput.classList.add('border-rose-500', 'bg-rose-950/40');
+        alert("⚠️ BATAS POPULASI MAKSIMAL 10.000.000 JIWA! HP Bergetar.");
+        return;
       }
+
+      const newRef = db.ref('monetary_data').push();
+      const newAccount = {
+        country, leader, currency, flag, community, population: pop, pin,
+        kurs: 1.00, stock: 0, maxStorage: 100000, devisa: 50000, kasLokal: 50000000,
+        status: 'Active', warnings: 0, embargo: false, createdTime: Date.now()
+      };
+      newRef.set(newAccount).then(() => {
+        activeUser = { key: newRef.key, ...newAccount };
+        localStorage.setItem('wcb_active_user', JSON.stringify(activeUser));
+        addAuditLog(`Registrasi negara baru: ${country}`);
+        location.reload();
+      });
     });
-  });
+  }
 
-  // Box 2: Register Account (Max 10 Juta + Getar HP)
-  document.getElementById('registerForm').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const country = document.getElementById('regCountry').value.trim();
-    const leader = document.getElementById('regLeader').value.trim();
-    const currency = document.getElementById('regCurrency').value.trim();
-    const flag = document.getElementById('regFlag').value.trim();
-    const community = document.getElementById('regCommunity').value.trim();
-    const popInput = document.getElementById('regPopulation');
-    const pop = Number(popInput.value);
-    const pin = document.getElementById('regPin').value.trim();
+  // KOTAK 3: SEWA SERVER KOMUNITAS LUAR FORM
+  const serverForm = document.getElementById('authBox3');
+  if (serverForm) {
+    serverForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const serverName = document.getElementById('serverName').value.trim();
+      const serverProof = document.getElementById('serverProof').value.trim();
+      const serverTheme = document.getElementById('serverTheme').value;
+      const accessCode = document.getElementById('serverAccessCode').value.trim();
 
-    if (pop > 10000000) {
-      if ("vibrate" in navigator) navigator.vibrate([300, 100, 300, 100, 500]);
-      popInput.classList.add('border-rose-500', 'bg-rose-950/40');
-      alert("⚠️ BATAS POPULASI MAKSIMAL 10.000.000 JIWA! Perangkat bergetar.");
-      return;
-    }
+      if (accessCode === "2026") {
+        alert("Kode Akses Valid! Masuk ke Server Komunitas.");
+        document.getElementById('authModal').classList.add('hidden');
+        return;
+      }
 
-    const newRef = db.ref('monetary_data').push();
-    const newAccount = {
-      country, leader, currency, flag, community, population: pop, pin,
-      kurs: 1.00, stock: 0, maxStorage: 100000, devisa: 50000, kasLokal: 50000000,
-      status: 'Active', warnings: 0, embargo: false, createdTime: Date.now()
-    };
-    newRef.set(newAccount).then(() => {
-      activeUser = { key: newRef.key, ...newAccount };
-      localStorage.setItem('wcb_active_user', JSON.stringify(activeUser));
-      addAuditLog(`Registrasi negara baru: ${country}`);
-      location.reload();
+      db.ref('server_requests').push({
+        serverName, serverProof, serverTheme, timestamp: Date.now()
+      }).then(() => {
+        alert("Pengajuan sewa server berhasil dikirim ke Admin Guill!");
+      });
     });
-  });
-
-  // Box 3: Server Rental Komunitas Luar
-  document.getElementById('authBox3').addEventListener('submit', (e) => {
-    e.preventDefault();
-    const serverName = document.getElementById('serverName').value.trim();
-    const serverProof = document.getElementById('serverProof').value.trim();
-    const serverTheme = document.getElementById('serverTheme').value;
-    const accessCode = document.getElementById('serverAccessCode').value.trim();
-
-    if (accessCode === "2026") {
-      alert("Kode Server Valid! Akses Diberikan.");
-      document.getElementById('authModal').classList.add('hidden');
-      return;
-    }
-
-    db.ref('server_requests').push({
-      serverName, serverProof, serverTheme, timestamp: Date.now()
-    }).then(() => {
-      alert("Pengajuan sewa server berhasil dikirim! Menunggu konfirmasi kode 4-angka dari Admin Guill.");
-    });
-  });
+  }
 
   startPopulationTicker();
   initBursaChart();
@@ -149,7 +158,7 @@ function initMemberPortal() {
     });
   });
 
-  // SDA Input Handler
+  // INPUT DATA SDA FORM
   const sdaForm = document.getElementById('sdaInputForm');
   if (sdaForm) {
     sdaForm.addEventListener('submit', (e) => {
@@ -170,20 +179,20 @@ function initMemberPortal() {
 
         db.ref(`monetary_data/${activeUser.key}/stock`).set(currentStock + qty);
         db.ref(`monetary_data/${activeUser.key}/inventory`).push({ name, qty, unit });
-        alert(`Berhasil menyimpan ${qty} ${unit} ${name} ke gudang.`);
+        alert(`Berhasil menyimpan ${qty} ${unit} ${name} ke gudang!`);
         sdaForm.reset();
       });
     });
   }
 }
 
-// LOGOUT / KELUAR (FIXED BEBAS STUCK)
+// LOGOUT FUNCTION FIX TOTAL
 function logoutMember() {
   localStorage.removeItem('wcb_active_user');
   window.location.href = 'index.html';
 }
 
-// POPULASI TICKER DINAMIS BERDASARKAN KESEJAHTERAAN
+// TICKER POPULASI DENGAN PERSENTASE KESEJAHTERAAN
 function startPopulationTicker() {
   setInterval(() => {
     if (activeUser && activeUser.key) {
@@ -216,7 +225,6 @@ function updateMemberStats(data) {
       storageLabel.textContent = `${(my.stock || 0).toLocaleString()} / ${(my.maxStorage || 100000).toLocaleString()} Unit`;
     }
 
-    // Render Inventory Rak
     const rakContainer = document.getElementById('sdaRakList');
     if (rakContainer && my.inventory) {
       rakContainer.innerHTML = '';
@@ -261,133 +269,42 @@ function renderPopulationRank(data) {
   });
 }
 
-// ADMIN VAULT LOGIC (PIN 272727)
-function initAdminVault() {
-  const pinInput = document.getElementById('adminPinInput');
-  if (pinInput) {
-    pinInput.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') verifyAdminPin();
-    });
-  }
-}
+function populateSelects(data) {
+  const invSelect = document.getElementById('invTarget');
+  const tfSelect = document.getElementById('transferTarget');
+  const treatySelect = document.getElementById('treatyTarget');
+  const pajakSelect = document.getElementById('pajakTarget');
 
-function verifyAdminPin() {
-  const pin = document.getElementById('adminPinInput').value.trim();
-  if (pin === ADMIN_PIN) {
-    document.getElementById('adminAuthModal').classList.add('hidden');
-    document.getElementById('adminDashboardContent').classList.remove('hidden');
-    loadAdminVaultData();
-  } else {
-    document.getElementById('authError').textContent = "PIN SALAH!";
-  }
-}
-
-function loadAdminVaultData() {
-  db.ref('monetary_data').on('value', snap => {
-    const data = snap.val() || {};
-    populateAdminSelects(data);
-    renderAdminAccounts(data);
-  });
-
-  db.ref('server_requests').on('value', snap => {
-    const reqs = snap.val() || {};
-    const container = document.getElementById('serverRequestsList');
-    if (!container) return;
-    container.innerHTML = '';
-    const keys = Object.keys(reqs);
-    if (keys.length === 0) {
-      container.innerHTML = '<p class="text-xs text-slate-500 italic">Tidak ada permohonan sewa server.</p>';
-      return;
-    }
-    keys.forEach(k => {
-      const r = reqs[k];
-      container.innerHTML += `
-        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center text-xs font-mono">
-          <div>
-            <span class="text-white font-bold text-sm">${r.serverName}</span>
-            <p class="text-slate-400">Tema: ${r.serverTheme} | <a href="${r.serverProof}" target="_blank" class="text-cyan-400 underline">Bukti Transfer</a></p>
-          </div>
-          <button onclick="approveServer('${k}', '${r.serverName}')" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg">ACC & Kirim Kode</button>
-        </div>`;
-    });
-  });
-}
-
-function approveServer(key, name) {
-  const code = Math.floor(1000 + Math.random() * 9000);
-  alert(`Server ${name} disetujui! Kode akses 4-angka: ${code}`);
-  db.ref(`server_requests/${key}`).remove();
-  addAuditLog(`ADMIN: Menyetujui server komunitas ${name} (Kode: ${code})`);
-}
-
-function populateAdminSelects(data) {
-  const sdaSelect = document.getElementById('sdaCountrySelect');
-  const kursSelect = document.getElementById('kursCountrySelect');
-  const injectSelect = document.getElementById('injectCountrySelect');
-  if (sdaSelect) sdaSelect.innerHTML = '<option value="">-- Pilih Negara --</option>';
-  if (kursSelect) kursSelect.innerHTML = '<option value="">-- Pilih Negara --</option>';
-  if (injectSelect) injectSelect.innerHTML = '<option value="">-- Pilih Negara --</option>';
+  if (invSelect) invSelect.innerHTML = '<option value="ALL">SELURUH NEGARA (MASS INVOICE)</option>';
+  if (tfSelect) tfSelect.innerHTML = '<option value="">-- Pilih Negara Tujuan --</option>';
+  if (treatySelect) treatySelect.innerHTML = '<option value="">-- Pilih Negara Tujuan --</option>';
+  if (pajakSelect) pajakSelect.innerHTML = '<option value="">-- Pilih Negara Target --</option>';
 
   Object.keys(data).forEach(k => {
     const c = data[k].country;
-    if (sdaSelect) sdaSelect.innerHTML += `<option value="${k}">${c}</option>`;
-    if (kursSelect) kursSelect.innerHTML += `<option value="${k}">${c}</option>`;
-    if (injectSelect) injectSelect.innerHTML += `<option value="${k}">${c}</option>`;
+    if (invSelect) invSelect.innerHTML += `<option value="${k}">${c}</option>`;
+    if (tfSelect) tfSelect.innerHTML += `<option value="${k}">${c}</option>`;
+    if (treatySelect) treatySelect.innerHTML += `<option value="${k}">${c}</option>`;
+    if (pajakSelect) pajakSelect.innerHTML += `<option value="${k}">${c}</option>`;
   });
 }
 
-function renderAdminAccounts(data) {
-  const c = document.getElementById('adminAccountList');
-  if (!c) return;
-  c.innerHTML = '';
-  Object.keys(data).forEach(k => {
-    const item = data[k];
-    c.innerHTML += `
-      <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
-        <div><strong class="text-white">${item.country}</strong> (${item.currency}) - Saldo: ${item.devisa || 0} EUPH | Warn: ${item.warnings || 0}/3</div>
-        <div class="flex gap-2">
-          <button onclick="addWarning('${k}', ${(item.warnings || 0) + 1})" class="px-3 py-1 bg-amber-600 text-white rounded-lg">+ Warn</button>
-          <button onclick="freezeAccount('${k}', '${item.status === 'Frozen' ? 'Active' : 'Frozen'}')" class="px-3 py-1 bg-rose-600 text-white rounded-lg">${item.status === 'Frozen' ? 'Cairkan' : 'Freeze'}</button>
-          <button onclick="deleteAccount('${k}')" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-lg">Hapus</button>
-        </div>
-      </div>`;
+function switchTab(tabId) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+  document.querySelectorAll('.tab-btn').forEach(el => {
+    el.classList.remove('bg-cyan-600', 'text-white');
+    el.classList.add('bg-slate-800', 'text-slate-300');
   });
-}
-
-function addWarning(key, count) {
-  db.ref(`monetary_data/${key}/warnings`).set(count);
-  addAuditLog(`ADMIN: Beri warning ke ${key}`);
-}
-
-function freezeAccount(key, status) {
-  db.ref(`monetary_data/${key}/status`).set(status);
-  addAuditLog(`ADMIN: Ubah status ${key} ke ${status}`);
-}
-
-function deleteAccount(key) {
-  if (confirm("Hapus negara ini?")) db.ref(`monetary_data/${key}`).remove();
-}
-
-function triggerCrisis(type) {
-  let title = type.toUpperCase();
-  db.ref('crisis_status').set({ active: true, title, timestamp: Date.now() });
-  addAuditLog(`ADMIN CRISIS: Memicu ${title}`);
-  alert(`Krisis ${title} Berhasil Dipicu!`);
-}
-
-function resetCrisis() {
-  db.ref('crisis_status').set({ active: false });
-  alert("Krisis Dinormalisasi.");
-}
-
-function addAuditLog(text) {
-  db.ref('audit_ledger').push({ text, timestamp: Date.now() });
+  document.getElementById(`content-${tabId}`).classList.remove('hidden');
+  const activeBtn = document.getElementById(`nav-${tabId}`);
+  activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
+  activeBtn.classList.add('bg-cyan-600', 'text-white');
 }
 
 function initBursaChart() {
   const ctx = document.getElementById('bursaChart');
   if (!ctx) return;
-  bursaChartInstance = new Chart(ctx, {
+  new Chart(ctx, {
     type: 'line',
     data: {
       labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'],
@@ -404,14 +321,6 @@ function initBursaChart() {
   });
 }
 
-function switchTab(tabId) {
-  document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-  document.querySelectorAll('.tab-btn').forEach(el => {
-    el.classList.remove('bg-cyan-600', 'text-white');
-    el.classList.add('bg-slate-800', 'text-slate-300');
-  });
-  document.getElementById(`content-${tabId}`).classList.remove('hidden');
-  const activeBtn = document.getElementById(`nav-${tabId}`);
-  activeBtn.classList.remove('bg-slate-800', 'text-slate-300');
-  activeBtn.classList.add('bg-cyan-600', 'text-white');
+function addAuditLog(text) {
+  db.ref('audit_ledger').push({ text, timestamp: Date.now() });
 }
