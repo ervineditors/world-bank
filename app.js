@@ -48,7 +48,6 @@ function initMemberPortal() {
     if (activeUser.flag) document.getElementById('countryFlagBox').innerHTML = `<img src="${activeUser.flag}" class="w-full h-full object-cover rounded-lg">`;
   }
 
-  // KOTAK 1: LOGIN
   const loginForm = document.getElementById('authBox1');
   if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
@@ -77,7 +76,6 @@ function initMemberPortal() {
     });
   }
 
-  // KOTAK 2: REGISTER (MAX 10 JUTA + GETAR HP)
   const regForm = document.getElementById('authBox2');
   if (regForm) {
     regForm.addEventListener('submit', (e) => {
@@ -113,7 +111,6 @@ function initMemberPortal() {
     });
   }
 
-  // KOTAK 3: SEWA SERVER
   const serverForm = document.getElementById('authBox3');
   if (serverForm) {
     serverForm.addEventListener('submit', (e) => {
@@ -132,6 +129,24 @@ function initMemberPortal() {
         serverName, serverProof, timestamp: Date.now()
       }).then(() => {
         alert("Pengajuan sewa server berhasil dikirim ke Admin Guill!");
+      });
+    });
+  }
+
+  // LOAN SUBMISSION FORM
+  const loanForm = document.getElementById('loanForm');
+  if (loanForm) {
+    loanForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!activeUser) return;
+      const amount = Number(document.getElementById('loanAmount').value);
+      const reason = document.getElementById('loanReason').value.trim();
+
+      db.ref('loan_requests').push({
+        countryKey: activeUser.key, countryName: activeUser.country, amount, reason, status: 'Pending', timestamp: Date.now()
+      }).then(() => {
+        alert("Permohonan pinjaman berhasil dikirim ke Admin Vault!");
+        loanForm.reset();
       });
     });
   }
@@ -156,7 +171,6 @@ function initMemberPortal() {
     });
   });
 
-  // INPUT SDA & GUDANG
   const sdaForm = document.getElementById('sdaInputForm');
   if (sdaForm) {
     sdaForm.addEventListener('submit', (e) => {
@@ -179,65 +193,6 @@ function initMemberPortal() {
         db.ref(`monetary_data/${activeUser.key}/inventory`).push({ name, qty, unit });
         alert(`Berhasil menyimpan ${qty} ${unit} ${name} ke gudang!`);
         sdaForm.reset();
-      });
-    });
-  }
-
-  // OBLIGASI NEGARA
-  const bondForm = document.getElementById('bondForm');
-  if (bondForm) {
-    bondForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!activeUser) return;
-      const amount = Number(document.getElementById('bondAmount').value);
-      const interest = Number(document.getElementById('bondInterest').value);
-
-      db.ref('sovereign_bonds').push({
-        country: activeUser.country, amount, interest, timestamp: Date.now()
-      }).then(() => {
-        addAuditLog(`${activeUser.country} menerbitkan Obligasi Senilai ${amount} EUPH (${interest}%)`);
-        alert("Obligasi berhasil diterbitkan ke pasar global!");
-        bondForm.reset();
-      });
-    });
-  }
-
-  // PINJAMAN MEMBER KE ADMIN
-  const loanForm = document.getElementById('loanForm');
-  if (loanForm) {
-    loanForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!activeUser) return;
-      const amount = Number(document.getElementById('loanAmount').value);
-      const reason = document.getElementById('loanReason').value.trim();
-
-      db.ref('loan_requests').push({
-        country: activeUser.country, key: activeUser.key, amount, reason, status: 'Pending', timestamp: Date.now()
-      }).then(() => {
-        addAuditLog(`${activeUser.country} mengajukan pinjaman WCB sebesar ${amount} EUPH`);
-        alert("Permohonan pinjaman berhasil dikirim ke Admin Vault!");
-        loanForm.reset();
-      });
-    });
-  }
-
-  // PROPOSAL KERJASAMA
-  const treatyForm = document.getElementById('treatyForm');
-  if (treatyForm) {
-    treatyForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      if (!activeUser) return;
-      const target = document.getElementById('treatyTarget').value;
-      const field = document.getElementById('treatyField').value;
-      const title = document.getElementById('treatyTitle').value.trim();
-      const desc = document.getElementById('treatyDesc').value.trim();
-
-      db.ref(`treaty_proposals/${target}`).push({
-        fromCountry: activeUser.country, fromKey: activeUser.key, field, title, desc, status: 'Pending', timestamp: Date.now()
-      }).then(() => {
-        addAuditLog(`Proposal Kerjasama (${field}) dikirim dari ${activeUser.country}`);
-        alert("Proposal Kerjasama berhasil dikirim!");
-        treatyForm.reset();
       });
     });
   }
@@ -421,7 +376,7 @@ function addAuditLog(text) {
   db.ref('audit_ledger').push({ text, timestamp: Date.now() });
 }
 
-// ADMIN VAULT LOGIC (PIN 272727)
+// ADMIN VAULT LOGIC
 function initAdminVault() {
   const pinInput = document.getElementById('adminPinInput');
   if (pinInput) {
@@ -449,54 +404,86 @@ function loadAdminVaultData() {
     renderAdminAccounts(data);
   });
 
+  db.ref('server_requests').on('value', snap => {
+    const reqs = snap.val() || {};
+    const container = document.getElementById('serverRequestsList');
+    if (!container) return;
+    container.innerHTML = '';
+    const keys = Object.keys(reqs);
+    if (keys.length === 0) {
+      container.innerHTML = '<p class="text-xs text-slate-500 italic">Tidak ada permohonan sewa server.</p>';
+      return;
+    }
+    keys.forEach(k => {
+      const r = reqs[k];
+      container.innerHTML += `
+        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center text-xs font-mono">
+          <div>
+            <span class="text-white font-bold text-sm">${r.serverName}</span>
+            <p class="text-slate-400"><a href="${r.serverProof}" target="_blank" class="text-cyan-400 underline">Bukti Transfer</a></p>
+          </div>
+          <button onclick="approveServer('${k}', '${r.serverName}')" class="px-3 py-1.5 bg-emerald-600 text-white rounded-lg">ACC & Kirim Kode</button>
+        </div>`;
+    });
+  });
+
+  // LOAD LOAN REQUESTS IN ADMIN VAULT
   db.ref('loan_requests').on('value', snap => {
-    const data = snap.val() || {};
+    const loans = snap.val() || {};
     const container = document.getElementById('loanPendingList');
     if (!container) return;
     container.innerHTML = '';
-    const keys = Object.keys(data);
+    const keys = Object.keys(loans);
     if (keys.length === 0) {
       container.innerHTML = '<p class="text-xs text-slate-500 italic">Tidak ada pengajuan pinjaman.</p>';
       return;
     }
     keys.forEach(k => {
-      const l = data[k];
-      container.innerHTML += `
-        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
-          <div><strong class="text-white">${l.country}</strong> mengajukan <strong>${l.amount} EUPH</strong> (${l.reason})</div>
-          <div>
-            ${l.status === 'Pending' ? `<button onclick="approveLoan('${k}', '${l.key}',${l.amount})" class="px-3 py-1 bg-emerald-600 text-white rounded-lg">ACC</button>` : `<span class="text-emerald-400 font-bold">DISETUJUI</span>`}
-          </div>
-        </div>`;
+      const l = loans[k];
+      if (l.status === 'Pending') {
+        container.innerHTML += `
+          <div class="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
+            <div>
+              <span class="text-cyan-400 font-bold">${l.countryName}</span> mengajukan pinjaman <span class="text-white font-bold">${l.amount.toLocaleString()} EUPH</span>
+              <p class="text-slate-400">Alasan: ${l.reason}</p>
+            </div>
+            <div class="flex gap-2">
+              <button onclick="approveLoan('${k}', '${l.countryKey}', ${l.amount})" class="px-3 py-1 bg-emerald-600 text-white rounded-lg">Setujui</button>
+              <button onclick="rejectLoan('${k}')" class="px-3 py-1 bg-rose-600 text-white rounded-lg">Tolak</button>
+            </div>
+          </div>`;
+      }
     });
   });
 }
 
-function approveLoan(reqKey, countryKey, amount) {
-  db.ref(`monetary_data/${countryKey}/devisa`).transaction(cur => (cur || 0) + amount);
-  db.ref(`loan_requests/${reqKey}/status`).set('Approved');
-  addAuditLog(`ADMIN: Menyetujui pinjaman ${amount} EUPH`);
-  alert("Pinjaman berhasil disetujui dan dicairkan ke negara tujuan!");
+function approveLoan(loanId, countryKey, amount) {
+  db.ref(`monetary_data/${countryKey}/devisa`).once('value').then(snap => {
+    const current = snap.val() || 0;
+    db.ref(`monetary_data/${countryKey}/devisa`).set(current + amount);
+    db.ref(`loan_requests/${loanId}/status`).set('Approved');
+    addAuditLog(`ADMIN: Menyetujui pinjaman ${amount.toLocaleString()} EUPH untuk negara ID ${countryKey}`);
+    alert("Pinjaman disetujui dan saldo berhasil dicairkan ke negara target!");
+  });
 }
 
-function triggerCrisis(type) {
-  let title = type.toUpperCase();
-  if (type === 'pandemi') title = 'PANDEMI VIRUS GLOBAL';
-  db.ref('crisis_status').set({ active: true, title, timestamp: Date.now() });
-  addAuditLog(`ADMIN CRISIS: Memicu ${title}`);
-  alert(`Krisis ${title} Berhasil Dipicu!`);
+function rejectLoan(loanId) {
+  db.ref(`loan_requests/${loanId}/status`).set('Rejected');
+  alert("Pinjaman ditolak.");
 }
 
-function resetCrisis() {
-  db.ref('crisis_status').set({ active: false });
-  alert("Krisis Dinormalisasi.");
+function approveServer(key, name) {
+  const code = Math.floor(1000 + Math.random() * 9000);
+  alert(`Server ${name} disetujui! Kode akses 4-angka: ${code}`);
+  db.ref(`server_requests/${key}`).remove();
+  addAuditLog(`ADMIN: Menyetujui server ${name} (Kode: ${code})`);
 }
 
 function populateAdminSelects(data) {
   const sdaSelect = document.getElementById('sdaCountrySelect');
   const injectSelect = document.getElementById('injectCountrySelect');
   if (sdaSelect) sdaSelect.innerHTML = '<option value="">-- Pilih Negara --</option>';
-  if (injectSelect) injectSelect.innerHTML = '<option value="">-- Pilih Negara --</option>';
+  if (injectSelect) injectSelect.innerHTML = '<option value="">-- Pilih Negara Terdaftar --</option>';
 
   Object.keys(data).forEach(k => {
     const c = data[k].country;
@@ -513,14 +500,39 @@ function renderAdminAccounts(data) {
     const item = data[k];
     c.innerHTML += `
       <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 flex justify-between items-center text-xs">
-        <div><strong class="text-white">${item.country}</strong> (${item.currency}) - Saldo: ${item.devisa || 0} EUPH</div>
+        <div><strong class="text-white">${item.country}</strong> (${item.currency}) - Saldo: ${item.devisa || 0} EUPH | Warn: ${item.warnings || 0}/3</div>
         <div class="flex gap-2">
+          <button onclick="addWarning('${k}', ${(item.warnings || 0) + 1})" class="px-3 py-1 bg-amber-600 text-white rounded-lg">+ Warn</button>
+          <button onclick="freezeAccount('${k}', '${item.status === 'Frozen' ? 'Active' : 'Frozen'}')" class="px-3 py-1 bg-rose-600 text-white rounded-lg">${item.status === 'Frozen' ? 'Cairkan' : 'Freeze'}</button>
           <button onclick="deleteAccount('${k}')" class="px-3 py-1 bg-slate-800 text-slate-300 rounded-lg">Hapus</button>
         </div>
       </div>`;
   });
 }
 
+function addWarning(key, count) {
+  db.ref(`monetary_data/${key}/warnings`).set(count);
+  addAuditLog(`ADMIN: Beri warning ke account ID ${key}`);
+}
+
+function freezeAccount(key, status) {
+  db.ref(`monetary_data/${key}/status`).set(status);
+  addAuditLog(`ADMIN: Ubah status account ke ${status}`);
+}
+
 function deleteAccount(key) {
   if (confirm("Hapus negara ini?")) db.ref(`monetary_data/${key}`).remove();
+}
+
+function triggerCrisis(type) {
+  let title = type.toUpperCase();
+  if (type === 'pandemi') title = 'PANDEMI VIRUS GLOBAL';
+  db.ref('crisis_status').set({ active: true, title, timestamp: Date.now() });
+  addAuditLog(`ADMIN CRISIS: Memicu ${title}`);
+  alert(`Krisis ${title} Berhasil Dipicu!`);
+}
+
+function resetCrisis() {
+  db.ref('crisis_status').set({ active: false });
+  alert("Krisis Dinormalisasi.");
 }
