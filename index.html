@@ -12,7 +12,7 @@
 <body class="min-h-screen flex flex-col antialiased">
   <div class="cyber-globe-bg"></div>
 
-  <!-- AUTHENTICATION MODAL (3 KOTAK UTAMA + SHORTCUT ADMIN AMAN TANPA EXPOSE PIN) -->
+  <!-- AUTHENTICATION MODAL (3 KOTAK + ADMIN SHORTCUT DI BAWAH TANPA EXPOSE PIN) -->
   <div id="authModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4">
     <div class="neon-box rounded-2xl p-6 md:p-8 max-w-xl w-full space-y-5 max-h-[95vh] overflow-y-auto">
       <div class="text-center">
@@ -20,14 +20,13 @@
         <p class="text-xs text-slate-400 font-mono mt-1">CNU SECURE GEOPOLITICAL MONETARY GATEWAY</p>
       </div>
 
-      <!-- Tab 3 Kotak Pilihan -->
       <div class="grid grid-cols-3 gap-2 p-1.5 bg-slate-950/80 rounded-xl border border-slate-800 text-[11px] font-bold text-center">
         <button type="button" id="box1Btn" onclick="switchAuthBox(1)" class="py-2.5 rounded-lg bg-cyan-600 text-white transition shadow-lg">1. Login Member</button>
         <button type="button" id="box2Btn" onclick="switchAuthBox(2)" class="py-2.5 rounded-lg text-slate-400 hover:text-white transition">2. Buat Akun Negara</button>
         <button type="button" id="box3Btn" onclick="switchAuthBox(3)" class="py-2.5 rounded-lg text-amber-400 hover:text-white transition bg-amber-950/40 border border-amber-500/30">3. Sewa Server</button>
       </div>
 
-      <!-- KOTAK 1: LOGIN MEMBER -->
+      <!-- KOTAK 1: LOGIN -->
       <form id="authBox1" class="space-y-4">
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Negara</label>
@@ -40,7 +39,7 @@
         <button type="submit" class="w-full py-3 neon-button text-white font-semibold rounded-xl text-sm">Masuk ke Dashboard Member</button>
       </form>
 
-      <!-- KOTAK 2: BUAT AKUN NEGARA -->
+      <!-- KOTAK 2: REGISTRASI -->
       <form id="authBox2" class="space-y-3 hidden">
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Negara</label>
@@ -95,7 +94,7 @@
         <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-xl text-sm transition">Verifikasi & Sewa Server</button>
       </form>
 
-      <!-- ADMIN SHORTCUT AMAN (TANPA EXPOSE PIN) -->
+      <!-- ADMIN SHORTCUT DI BAWAH (TANPA EXPOSE PIN) -->
       <div class="pt-3 border-t border-slate-800 text-center">
         <a href="admin.html" class="inline-flex items-center gap-2 text-xs font-semibold text-cyan-400 hover:text-cyan-300 bg-cyan-950/40 px-4 py-2 rounded-xl border border-cyan-500/30 transition">
           <i class="fa-solid fa-shield-halved"></i> Masuk Otoritas Admin Vault
@@ -147,7 +146,7 @@
   <!-- MAIN CONTENT -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
 
-    <!-- BANNER KRISIS -->
+    <!-- BANNER KRISIS GLOBAL -->
     <div id="crisisAlertBanner" class="hidden bg-rose-950/80 border border-rose-500/50 rounded-2xl p-4 flex items-center justify-between animate-pulse">
       <div class="flex items-center gap-3">
         <i class="fa-solid fa-triangle-exclamation text-rose-400 text-2xl"></i>
@@ -205,7 +204,7 @@
         </div>
       </section>
 
-      <!-- LEADERBOARD -->
+      <!-- LEADERBOARD POPULASI -->
       <section class="neon-box rounded-2xl p-5">
         <h2 class="text-sm font-bold text-slate-200 uppercase mb-3 flex items-center gap-2"><i class="fa-solid fa-ranking-star text-amber-400"></i> Peringkat Populasi Negara</h2>
         <div class="overflow-x-auto">
@@ -226,15 +225,15 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
           <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
             <span class="text-xs font-bold text-rose-400">🔴 Minyak & Energi</span>
-            <p class="text-xs text-slate-400 mt-1">Stok Global: <span class="text-white font-mono">15,400 Unit</span></p>
+            <p class="text-xs text-slate-400 mt-1">Stok Global: <span id="stokMinyak" class="text-white font-mono">15,400 Unit</span></p>
           </div>
           <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
             <span class="text-xs font-bold text-amber-400">🟡 Emas & Tambang</span>
-            <p class="text-xs text-slate-400 mt-1">Stok Global: <span class="text-white font-mono">8,200 Unit</span></p>
+            <p class="text-xs text-slate-400 mt-1">Stok Global: <span id="stokEmas" class="text-white font-mono">8,200 Unit</span></p>
           </div>
           <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
             <span class="text-xs font-bold text-emerald-400">🟢 Pangan & Industri</span>
-            <p class="text-xs text-slate-400 mt-1">Stok Global: <span class="text-white font-mono">45,000 Unit</span></p>
+            <p class="text-xs text-slate-400 mt-1">Stok Global: <span id="stokPangan" class="text-white font-mono">45,000 Unit</span></p>
           </div>
         </div>
       </section>
@@ -274,7 +273,7 @@
           <div id="inboxList" class="space-y-2 text-xs text-slate-400 max-h-48 overflow-y-auto">Belum ada tagihan.</div>
         </div>
         <div class="neon-box rounded-2xl p-5">
-          <h2 class="text-sm font-bold text-white mb-3 flex items-center gap-2"><i class="fa-solid fa-qrcode text-amber-400"></i> Verifikasi Resi & Nota Bank</h2>
+          <h2 class="text-sm font-bold text-white mb-3 flex items-center gap-2"><i class="fa-solid fa-qrcode text-amber-400"></i> Verifikasi Resi & Cetak Nota</h2>
           <input type="text" id="verifyResiInput" placeholder="Kode Resi WCB-..." class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white mb-3">
           <button onclick="verifyResi()" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs">Cek Keaslian Resi</button>
         </div>
@@ -360,7 +359,7 @@
         </section>
       </div>
 
-      <!-- GRAFIK BURSA -->
+      <!-- GRAFIK BURSA PERUSAHAAN (CHART.JS) -->
       <section class="neon-box rounded-2xl p-6 space-y-4">
         <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-chart-line text-cyan-400"></i> Proyeksi Bursa Perusahaan & Peluang Investasi Aktif</h2>
         <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 h-64 relative">
