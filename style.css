@@ -7,11 +7,10 @@ body {
   overflow-x: hidden;
 }
 
-/* Cyberpunk Neon Glow */
 .neon-box {
-  background: rgba(13, 18, 32, 0.85);
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.15);
+  background: rgba(13, 18, 32, 0.9);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  box-shadow: 0 0 25px rgba(6, 182, 212, 0.2);
   backdrop-filter: blur(12px);
 }
 
@@ -22,14 +21,14 @@ body {
 }
 
 .neon-button:hover {
-  box-shadow: 0 0 25px rgba(6, 182, 212, 0.8);
+  box-shadow: 0 0 30px rgba(6, 182, 212, 0.8);
   transform: translateY(-1px);
 }
 
-/* Animasi Jaringan Global Berputar (Rotating Cyber Globe) */
+/* Animasi Jaringan Global Berputar */
 @keyframes rotateGlobal {
   0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
-  50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.05); }
+  50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.06); }
   100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
 }
 
@@ -37,37 +36,13 @@ body {
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 850px;
-  height: 850px;
+  width: 900px;
+  height: 900px;
   transform: translate(-50%, -50%);
-  background: radial-gradient(circle, rgba(6,182,212,0.08) 0%, rgba(59,130,246,0.04) 40%, transparent 70%);
-  border: 1px dashed rgba(6, 182, 212, 0.2);
+  background: radial-gradient(circle, rgba(6,182,212,0.1) 0%, rgba(59,130,246,0.05) 40%, transparent 70%);
+  border: 1px dashed rgba(6, 182, 212, 0.25);
   border-radius: 50%;
-  animation: rotateGlobal 35s linear infinite;
+  animation: rotateGlobal 30s linear infinite;
   z-index: -1;
   pointer-events: none;
-}
-
-/* Sparkle Effect */
-.sparkle-btn {
-  position: relative;
-  overflow: hidden;
-}
-
-.sparkle-btn::before {
-  content: '';
-  position: absolute;
-  inset: -2px;
-  background: linear-gradient(90deg, #06b6d4, #8b5cf6, #ec4899, #06b6d4);
-  background-size: 300% 300%;
-  z-index: -1;
-  animation: sparkleAnim 4s linear infinite;
-  border-radius: inherit;
-  opacity: 0.7;
-}
-
-@keyframes sparkleAnim {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
 }
