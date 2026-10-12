@@ -12,7 +12,7 @@
 <body class="min-h-screen flex flex-col antialiased">
   <div class="cyber-globe-bg"></div>
 
-  <!-- AUTHENTICATION MODAL (3 KOTAK UTAMA + SHORTCUT ADMIN DI BAWAH) -->
+  <!-- AUTHENTICATION MODAL (3 KOTAK UTAMA + SHORTCUT ADMIN AMAN TANPA EXPOSE PIN) -->
   <div id="authModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4">
     <div class="neon-box rounded-2xl p-6 md:p-8 max-w-xl w-full space-y-5 max-h-[95vh] overflow-y-auto">
       <div class="text-center">
@@ -78,7 +78,7 @@
       <!-- KOTAK 3: SEWA SERVER -->
       <form id="authBox3" class="space-y-3 hidden">
         <div class="p-3 bg-amber-950/30 border border-amber-500/30 rounded-xl text-xs text-amber-300">
-          Sewa server mandiri (Rp 5.000 / 6 bulan). Upload bukti transfer & dapatkan Kode 4-Digit dari Admin Guill.
+          Sewa server mandiri (Rp 5.000 / 6 bulan). Upload bukti transfer & dapatkan Kode 4-Digit dari Admin.
         </div>
         <div>
           <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Komunitas</label>
@@ -95,10 +95,10 @@
         <button type="submit" class="w-full py-3 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded-xl text-sm transition">Verifikasi & Sewa Server</button>
       </form>
 
-      <!-- ADMIN SHORTCUT BAR DI BAWAH REGISTRASI -->
+      <!-- ADMIN SHORTCUT AMAN (TANPA EXPOSE PIN) -->
       <div class="pt-3 border-t border-slate-800 text-center">
         <a href="admin.html" class="inline-flex items-center gap-2 text-xs font-semibold text-cyan-400 hover:text-cyan-300 bg-cyan-950/40 px-4 py-2 rounded-xl border border-cyan-500/30 transition">
-          <i class="fa-solid fa-shield-halved"></i> Masuk Otoritas Admin Vault (PIN: 272727)
+          <i class="fa-solid fa-shield-halved"></i> Masuk Otoritas Admin Vault
         </a>
       </div>
     </div>
@@ -147,7 +147,7 @@
   <!-- MAIN CONTENT -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
 
-    <!-- BANNER KRISIS GLOBAL -->
+    <!-- BANNER KRISIS -->
     <div id="crisisAlertBanner" class="hidden bg-rose-950/80 border border-rose-500/50 rounded-2xl p-4 flex items-center justify-between animate-pulse">
       <div class="flex items-center gap-3">
         <i class="fa-solid fa-triangle-exclamation text-rose-400 text-2xl"></i>
@@ -183,7 +183,7 @@
         </div>
       </section>
 
-      <!-- LIVE POPULATION TICKER (BERDASARKAN KESEJAHTERAAN & VIRUS) -->
+      <!-- LIVE POPULATION TICKER -->
       <section class="bg-gradient-to-r from-slate-900/85 to-indigo-950/50 border border-indigo-500/30 rounded-2xl p-5 flex flex-col md:flex-row justify-between items-center gap-4">
         <div>
           <h2 class="text-sm font-bold text-indigo-300 uppercase flex items-center gap-2"><i class="fa-solid fa-users text-indigo-400"></i> Pertumbuhan Populasi Live</h2>
@@ -205,7 +205,7 @@
         </div>
       </section>
 
-      <!-- LEADERBOARD POPULASI -->
+      <!-- LEADERBOARD -->
       <section class="neon-box rounded-2xl p-5">
         <h2 class="text-sm font-bold text-slate-200 uppercase mb-3 flex items-center gap-2"><i class="fa-solid fa-ranking-star text-amber-400"></i> Peringkat Populasi Negara</h2>
         <div class="overflow-x-auto">
@@ -226,15 +226,15 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-3">
           <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
             <span class="text-xs font-bold text-rose-400">🔴 Minyak & Energi</span>
-            <p class="text-xs text-slate-400 mt-1">Stok Global: <span id="stokMinyak" class="text-white font-mono">15,400 Unit</span></p>
+            <p class="text-xs text-slate-400 mt-1">Stok Global: <span class="text-white font-mono">15,400 Unit</span></p>
           </div>
           <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
             <span class="text-xs font-bold text-amber-400">🟡 Emas & Tambang</span>
-            <p class="text-xs text-slate-400 mt-1">Stok Global: <span id="stokEmas" class="text-white font-mono">8,200 Unit</span></p>
+            <p class="text-xs text-slate-400 mt-1">Stok Global: <span class="text-white font-mono">8,200 Unit</span></p>
           </div>
           <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
             <span class="text-xs font-bold text-emerald-400">🟢 Pangan & Industri</span>
-            <p class="text-xs text-slate-400 mt-1">Stok Global: <span id="stokPangan" class="text-white font-mono">45,000 Unit</span></p>
+            <p class="text-xs text-slate-400 mt-1">Stok Global: <span class="text-white font-mono">45,000 Unit</span></p>
           </div>
         </div>
       </section>
@@ -274,7 +274,7 @@
           <div id="inboxList" class="space-y-2 text-xs text-slate-400 max-h-48 overflow-y-auto">Belum ada tagihan.</div>
         </div>
         <div class="neon-box rounded-2xl p-5">
-          <h2 class="text-sm font-bold text-white mb-3 flex items-center gap-2"><i class="fa-solid fa-qrcode text-amber-400"></i> Verifikasi Resi & Cetak Nota</h2>
+          <h2 class="text-sm font-bold text-white mb-3 flex items-center gap-2"><i class="fa-solid fa-qrcode text-amber-400"></i> Verifikasi Resi & Nota Bank</h2>
           <input type="text" id="verifyResiInput" placeholder="Kode Resi WCB-..." class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white mb-3">
           <button onclick="verifyResi()" class="w-full py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl text-xs">Cek Keaslian Resi</button>
         </div>
@@ -360,7 +360,7 @@
         </section>
       </div>
 
-      <!-- GRAFIK BURSA PERUSAHAAN (CHART.JS) -->
+      <!-- GRAFIK BURSA -->
       <section class="neon-box rounded-2xl p-6 space-y-4">
         <h2 class="text-base font-bold text-white flex items-center gap-2"><i class="fa-solid fa-chart-line text-cyan-400"></i> Proyeksi Bursa Perusahaan & Peluang Investasi Aktif</h2>
         <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 h-64 relative">
@@ -389,7 +389,7 @@
       </section>
     </div>
 
-    <!-- TAB 5: KERJASAMA & EMBARGO (10+ SEKTOR DIPLOMATIK) -->
+    <!-- TAB 5: KERJASAMA & EMBARGO -->
     <div id="content-diplomacy" class="tab-content hidden space-y-6">
       <section class="neon-box rounded-2xl p-6">
         <h2 class="text-base font-bold text-white mb-1 flex items-center gap-2"><i class="fa-solid fa-dove text-cyan-400"></i> Proposal Kerjasama Diplomatik (10+ Sektor)</h2>
@@ -415,7 +415,6 @@
         </form>
       </section>
 
-      <!-- DAFTAR PROPOSAL MASUK / KELUAR & ACC -->
       <section class="neon-box rounded-2xl p-6">
         <h2 class="text-base font-bold text-white mb-3 flex items-center gap-2"><i class="fa-solid fa-handshake text-emerald-400"></i> Proposal Kerjasama Masuk (ACC / Tolak)</h2>
         <div id="treatyInboxList" class="space-y-3 text-xs font-mono">
