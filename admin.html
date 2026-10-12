@@ -3,171 +3,141 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WCB Sovereign Vault (Admin - CNU Edition)</title>
+  <title>WCB Sovereign Vault (Admin)</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: { brand: { 50: '#ecfeff', 500: '#06b6d4', 600: '#0891b2', 900: '#164e63' }, darkbg: '#060911' },
-          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] }
-        }
-      }
-    }
-  </script>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-[#060911] text-slate-100 font-sans antialiased min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col antialiased">
+  <div class="cyber-globe-bg"></div>
 
-  <!-- MODAL AUTHENTICATION ADMIN (PIN 272727) -->
-  <div id="adminAuthModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 md:p-8 max-w-md w-full shadow-2xl text-center space-y-4">
+  <!-- MODAL ADMIN AUTH (PIN 272727) -->
+  <div id="adminAuthModal" class="fixed inset-0 bg-slate-950/95 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+    <div class="neon-box rounded-2xl p-6 md:p-8 max-w-md w-full text-center space-y-4">
       <div class="inline-flex p-3 bg-cyan-500/10 text-cyan-400 rounded-2xl border border-cyan-500/20 mb-2">
         <i class="fa-solid fa-shield-halved text-3xl"></i>
       </div>
-      <h2 class="text-xl font-bold text-white">WCB SOVEREIGN VAULT (ADMIN)</h2>
-      <p class="text-xs text-slate-400">Masukkan PIN Keamanan 6 Angka Otoritas Sentral.</p>
-      
+      <h2 class="text-xl font-bold text-white">WCB SOVEREIGN VAULT</h2>
+      <p class="text-xs text-slate-400">Masukkan PIN Keamanan 6 Angka (272727).</p>
       <div class="space-y-3 pt-2">
-        <input type="password" id="adminPinInput" maxlength="6" placeholder="••••••" class="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-center text-xl font-mono text-cyan-400 tracking-widest focus:outline-none focus:border-cyan-500 transition">
-        <button id="btnLoginAdmin" type="button" onclick="verifyAdminPin()" class="w-full py-3 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl text-sm shadow-lg transition">
-          Buka Vault Admin
-        </button>
+        <input type="password" id="adminPinInput" maxlength="6" placeholder="••••••" class="w-full px-4 py-3 bg-slate-950 border border-slate-700 rounded-xl text-center text-xl font-mono text-cyan-400 tracking-widest">
+        <button type="button" onclick="verifyAdminPin()" class="w-full py-3 neon-button text-white font-semibold rounded-xl text-sm">Buka Vault Admin</button>
         <p id="authError" class="text-xs text-rose-400 font-mono h-4"></p>
       </div>
-
       <div class="pt-4 border-t border-slate-800">
-        <a href="index.html" class="text-xs text-slate-400 hover:text-cyan-400 transition flex items-center justify-center gap-1">
-          <i class="fa-solid fa-arrow-left"></i> Kembali ke Portal Member
-        </a>
+        <a href="index.html" class="text-xs text-slate-400 hover:text-cyan-400 flex items-center justify-center gap-1"><i class="fa-solid fa-arrow-left"></i> Kembali ke Portal Member</a>
       </div>
     </div>
   </div>
 
-  <!-- ADMIN DASHBOARD CONTENT -->
+  <!-- ADMIN DASHBOARD -->
   <div id="adminDashboardContent" class="flex-1 flex flex-col hidden">
     <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800 sticky top-0 z-40 px-6 py-3">
       <div class="max-w-7xl mx-auto flex justify-between items-center">
         <div class="flex items-center space-x-3">
-          <div class="bg-cyan-500/10 p-2.5 rounded-xl border border-cyan-500/30 text-cyan-400">
-            <i class="fa-solid fa-vault text-2xl"></i>
-          </div>
+          <div class="bg-cyan-500/10 p-2.5 rounded-xl border border-cyan-500/30 text-cyan-400"><i class="fa-solid fa-vault text-2xl"></i></div>
           <div>
-            <h1 class="text-lg font-bold tracking-wider text-white flex items-center gap-2">
-              WCB SOVEREIGN VAULT <span class="bg-cyan-500/20 text-cyan-300 text-xs px-2 py-0.5 rounded-full border border-cyan-500/30 font-mono">ADMIN PANEL</span>
-            </h1>
-            <p class="text-xs text-slate-400">Kontrol Kebijakan Moneter, Gudang SDA, Bursa, Audit & Direct Injection</p>
+            <h1 class="text-lg font-bold text-white flex items-center gap-2">WCB SOVEREIGN VAULT <span class="bg-cyan-500/20 text-cyan-300 text-xs px-2 py-0.5 rounded-full border border-cyan-500/30 font-mono">ADMIN</span></h1>
+            <p class="text-xs text-slate-400">Pusat Kendali Otoritas Moneter & Server Komunitas</p>
           </div>
         </div>
-        <a href="index.html" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-semibold text-slate-300 transition">
-          Portal Member
-        </a>
+        <a href="index.html" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 rounded-xl text-xs font-semibold text-slate-300">Portal Member</a>
       </div>
     </header>
 
     <main class="flex-1 max-w-6xl w-full mx-auto p-4 md:p-6 space-y-6">
 
-      <!-- LIST ACC PERMOHONAN SEWA SERVER KOMUNITAS -->
-      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-3 flex items-center gap-2">
-          <i class="fa-solid fa-server text-orange-400"></i> PERMOHONAN SEWA SERVER KOMUNITAS (RP 5.000)
-        </h2>
-        <div id="serverPendingList" class="space-y-2 text-xs text-slate-400 italic">Tidak ada pengajuan sewa server pending.</div>
+      <!-- PERSETUJUAN SEWA SERVER KOMUNITAS -->
+      <section class="neon-box rounded-2xl p-6">
+        <h2 class="text-sm font-bold text-amber-400 uppercase tracking-wider mb-3 flex items-center gap-2"><i class="fa-solid fa-server"></i> Persetujuan Sewa Server Komunitas Luar</h2>
+        <div id="serverRequestsList" class="space-y-3">
+          <p class="text-xs text-slate-500 italic">Tidak ada permohonan sewa server.</p>
+        </div>
       </section>
 
-      <!-- 1. MANAJEMEN BURSA & PERUSAHAAN -->
-      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-building text-cyan-400"></i> MANAJEMEN BURSA & PERUSAHAAN (MAJU / HAPUS)
-        </h2>
+      <!-- 12 SKENARIO KRISIS (TERMASUK PANDEMI VIRUS) -->
+      <section class="neon-box rounded-2xl p-6 border-rose-500/40">
+        <h2 class="text-sm font-bold text-rose-300 uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bolt text-rose-400"></i> Crisis Event Trigger (12 Skenario Global)</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-3">
+          <button onclick="triggerCrisis('minyak')" class="p-3 bg-rose-950/60 border border-rose-800 rounded-xl text-left hover:bg-rose-900 transition"><span class="text-xs font-bold text-rose-300 block">📉 Krisis Minyak</span></button>
+          <button onclick="triggerCrisis('pangan')" class="p-3 bg-amber-950/60 border border-amber-800 rounded-xl text-left hover:bg-amber-900 transition"><span class="text-xs font-bold text-amber-300 block">🌾 Bencana Pangan</span></button>
+          <button onclick="triggerCrisis('deflasi')" class="p-3 bg-cyan-950/60 border border-cyan-800 rounded-xl text-left hover:bg-cyan-900 transition"><span class="text-xs font-bold text-cyan-300 block">📈 Deflasi EUPH</span></button>
+          <button onclick="triggerCrisis('perang')" class="p-3 bg-red-950/60 border border-red-800 rounded-xl text-left hover:bg-red-900 transition"><span class="text-xs font-bold text-red-300 block">⚔️ Perang Alutsista</span></button>
+          <button onclick="triggerCrisis('inflasi')" class="p-3 bg-orange-950/60 border border-orange-800 rounded-xl text-left hover:bg-orange-900 transition"><span class="text-xs font-bold text-orange-300 block">💸 Hiperinflasi</span></button>
+          <button onclick="triggerCrisis('pandemi')" class="p-3 bg-purple-950/60 border border-purple-800 rounded-xl text-left hover:bg-purple-900 transition"><span class="text-xs font-bold text-purple-300 block">☣️ Pandemi Virus Global</span></button>
+          <button onclick="triggerCrisis('krisis_energi')" class="p-3 bg-yellow-950/60 border border-yellow-800 rounded-xl text-left hover:bg-yellow-900 transition"><span class="text-xs font-bold text-yellow-300 block">⚡ Blackout Energi</span></button>
+          <button onclick="triggerCrisis('depresi')" class="p-3 bg-blue-950/60 border border-blue-800 rounded-xl text-left hover:bg-blue-900 transition"><span class="text-xs font-bold text-blue-300 block">📉 Great Depression</span></button>
+          <button onclick="triggerCrisis('revolusi')" class="p-3 bg-emerald-950/60 border border-emerald-800 rounded-xl text-left hover:bg-emerald-900 transition"><span class="text-xs font-bold text-emerald-300 block">✊ Revolusi Buruh</span></button>
+          <button onclick="triggerCrisis('krisis_air')" class="p-3 bg-sky-950/60 border border-sky-800 rounded-xl text-left hover:bg-sky-900 transition"><span class="text-xs font-bold text-sky-300 block">💧 Krisis Air Bersih</span></button>
+          <button onclick="triggerCrisis('crash_pasar')" class="p-3 bg-indigo-950/60 border border-indigo-800 rounded-xl text-left hover:bg-indigo-900 transition"><span class="text-xs font-bold text-indigo-300 block">💥 Market Crash 2026</span></button>
+          <button onclick="triggerCrisis('alien')" class="p-3 bg-violet-950/60 border border-violet-800 rounded-xl text-left hover:bg-violet-900 transition"><span class="text-xs font-bold text-violet-300 block">🛸 Anomali Geopolitik</span></button>
+        </div>
+        <button onclick="resetCrisis()" class="mt-3 px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-xl">Normalisasi Krisis</button>
+      </section>
+
+      <!-- MANAJEMEN BURSA & PERUSAHAAN -->
+      <section class="neon-box rounded-2xl p-6">
+        <h2 class="text-sm font-bold text-slate-200 uppercase mb-3"><i class="fa-solid fa-building text-cyan-400"></i> Manajemen Bursa & Perusahaan (Maju / Hapus)</h2>
         <div id="bursaListAdmin" class="space-y-2 text-xs text-slate-400 italic">Belum ada perusahaan berdiri.</div>
       </section>
 
-      <!-- 2. KENDALI GUDANG & SDA NEGARA -->
-      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-boxes-stacked text-amber-400"></i> KENDALI GUDANG & SDA NEGARA
-        </h2>
+      <!-- KENDALI GUDANG & SDA -->
+      <section class="neon-box rounded-2xl p-6">
+        <h2 class="text-sm font-bold text-slate-200 uppercase mb-3"><i class="fa-solid fa-boxes-stacked text-amber-400"></i> Kendali Gudang & SDA Negara</h2>
         <form id="sdaForm" class="space-y-4">
           <select id="sdaCountrySelect" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
             <option value="">-- Pilih Negara Target --</option>
           </select>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input type="number" id="sdaStock" placeholder="Stok SDA Raw" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
-            <input type="number" id="sdaMaxStorage" placeholder="Max Storage Capacity" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
+          <div class="grid grid-cols-2 gap-4">
+            <input type="number" id="sdaStock" placeholder="Jumlah SDA Raw" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
+            <input type="number" id="sdaMaxStorage" placeholder="Max Storage Capacity" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
           </div>
-          <button type="submit" class="w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white font-semibold rounded-xl text-sm transition">Simpan Data SDA & Storage</button>
+          <button type="submit" class="w-full py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-sm">Simpan Data SDA & Storage</button>
         </form>
       </section>
 
-      <!-- 3. REGULASI VALUTA & NILAI TUKAR (KURS PLAYER) -->
-      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-coins text-emerald-400"></i> REGULASI VALUTA & NILAI TUKAR (KURS PLAYER)
-        </h2>
+      <!-- REGULASI VALUTA -->
+      <section class="neon-box rounded-2xl p-6">
+        <h2 class="text-sm font-bold text-slate-200 uppercase mb-3"><i class="fa-solid fa-coins text-emerald-400"></i> Regulasi Valuta & Nilai Tukar (Kurs Player)</h2>
         <form id="kursForm" class="space-y-4">
           <select id="kursCountrySelect" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
             <option value="">-- Pilih Negara --</option>
           </select>
           <div class="grid grid-cols-2 gap-4">
-            <input type="number" step="0.01" id="kursEuph" value="1" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-cyan-300">
-            <input type="number" id="kursLocal" placeholder="Nilai Uang Lokal" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
+            <input type="number" step="0.01" id="kursEuph" value="1" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-cyan-300">
+            <input type="number" id="kursLocal" placeholder="Uang Lokal" required class="px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-white">
           </div>
-          <div class="flex flex-wrap gap-3">
-            <button type="button" onclick="adjustKurs('kuat')" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-xs transition">📈 Kuatkan (+10%)</button>
-            <button type="button" onclick="adjustKurs('lemah')" class="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white font-semibold rounded-xl text-xs transition">📉 Lemahkan (-10%)</button>
-            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl text-xs transition">Set Kurs</button>
+          <div class="flex gap-3">
+            <button type="button" onclick="adjustKurs('kuat')" class="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs">📈 Kuatkan (+10%)</button>
+            <button type="button" onclick="adjustKurs('lemah')" class="px-4 py-2 bg-rose-600 text-white rounded-xl text-xs">📉 Lemahkan (-10%)</button>
+            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs">Set Kurs</button>
           </div>
         </form>
       </section>
 
-      <!-- 4. MANAJEMEN AKUN NEGARA -->
-      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-user-gear text-rose-400"></i> MANAJEMEN AKUN NEGARA (PERINGATAN / FREEZE / HAPUS)
-        </h2>
-        <div id="adminAccountList" class="space-y-3"></div>
+      <!-- PERMOHONAN PINJAMAN MEMBER -->
+      <section class="neon-box rounded-2xl p-6">
+        <h2 class="text-sm font-bold text-slate-200 uppercase mb-3"><i class="fa-solid fa-file-circle-check text-purple-400"></i> Permohonan Pinjaman Member</h2>
+        <div id="loanPendingList" class="space-y-2 text-xs text-slate-400 italic">Tidak ada pengajuan pinjaman.</div>
       </section>
 
-      <!-- 5. PERMOHONAN PINJAMAN MEMBER -->
-      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-file-circle-check text-purple-400"></i> PERMOHONAN PINJAMAN MEMBER (LOAN)
-        </h2>
-        <div id="loanPendingList" class="space-y-2 text-xs text-slate-400 italic">Tidak ada pengajuan pinjaman pending.</div>
-      </section>
-
-      <!-- 6. DIRECT SALDO INJECTION -->
-      <section class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
-        <h2 class="text-sm font-bold text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
-          <i class="fa-solid fa-syringe text-emerald-400"></i> DIRECT SALDO INJECTION
-        </h2>
+      <!-- DIRECT SALDO INJECTION -->
+      <section class="neon-box rounded-2xl p-6">
+        <h2 class="text-sm font-bold text-slate-200 uppercase mb-3"><i class="fa-solid fa-syringe text-emerald-400"></i> Direct Saldo Injection</h2>
         <form id="injectionForm" class="space-y-3">
           <select id="injectCountrySelect" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
             <option value="">-- Pilih Negara Terdaftar --</option>
           </select>
           <input type="text" id="injectManualCountry" placeholder="Atau Ketik Manual Nama Negara" class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white">
           <input type="number" id="injectAmount" placeholder="Nominal Saldo EUPH" required class="w-full px-3 py-2 bg-slate-800 border border-slate-700 rounded-xl text-sm font-mono text-cyan-300">
-          <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-xl text-sm transition">Suntik Saldo EUPH</button>
+          <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm">Suntik Saldo EUPH</button>
         </form>
       </section>
 
-      <!-- 7. CRISIS EVENT TRIGGER (6 SKENARIO) -->
-      <section class="bg-slate-900/60 border border-rose-500/30 rounded-2xl p-6">
-        <h2 class="text-sm font-bold text-rose-300 uppercase tracking-wider mb-2 flex items-center gap-2">
-          <i class="fa-solid fa-bolt text-rose-400"></i> CRISIS EVENT TRIGGER (6 SKENARIO GLOBAL)
-        </h2>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3">
-          <button onclick="triggerCrisis('minyak')" class="p-3 bg-rose-950/60 border border-rose-800 rounded-xl text-left hover:bg-rose-900 transition"><span class="text-xs font-bold text-rose-300 block">📉 Krisis Minyak</span><span class="text-[10px] text-slate-400">Stok turun, harga +50%</span></button>
-          <button onclick="triggerCrisis('pangan')" class="p-3 bg-amber-950/60 border border-amber-800 rounded-xl text-left hover:bg-amber-900 transition"><span class="text-xs font-bold text-amber-300 block">🌾 Bencana Pangan</span><span class="text-[10px] text-slate-400">Kebutuhan naik 2x lipat</span></button>
-          <button onclick="triggerCrisis('deflasi')" class="p-3 bg-cyan-950/60 border border-cyan-800 rounded-xl text-left hover:bg-cyan-900 transition"><span class="text-xs font-bold text-cyan-300 block">📈 Deflasi EUPH</span><span class="text-[10px] text-slate-400">Devisa menguat tajam</span></button>
-          <button onclick="triggerCrisis('perang')" class="p-3 bg-red-950/60 border border-red-800 rounded-xl text-left hover:bg-red-900 transition"><span class="text-xs font-bold text-red-300 block">⚔️ Perang Alutsista</span><span class="text-[10px] text-slate-400">Alutsista naik 75%</span></button>
-          <button onclick="triggerCrisis('inflasi')" class="p-3 bg-orange-950/60 border border-orange-800 rounded-xl text-left hover:bg-orange-900 transition"><span class="text-xs font-bold text-orange-300 block">💸 Hiperinflasi</span><span class="text-[10px] text-slate-400">Uang lokal melemah</span></button>
-          <button onclick="triggerCrisis('pandemi')" class="p-3 bg-purple-950/60 border border-purple-800 rounded-xl text-left hover:bg-purple-900 transition"><span class="text-xs font-bold text-purple-300 block">☣️ Pandemi Global</span><span class="text-[10px] text-slate-400">Populasi wafat 2x</span></button>
-        </div>
-        <button onclick="resetCrisis()" class="mt-3 px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs rounded-xl transition">Hentikan Status Krisis</button>
+      <!-- MANAJEMEN AKUN NEGARA -->
+      <section class="neon-box rounded-2xl p-6">
+        <h2 class="text-sm font-bold text-slate-200 uppercase mb-3"><i class="fa-solid fa-user-gear text-rose-400"></i> Manajemen Akun Negara (Warning / Freeze / Hapus)</h2>
+        <div id="adminAccountList" class="space-y-3"></div>
       </section>
 
     </main>
