@@ -8,7 +8,7 @@ body {
 }
 
 .neon-box {
-  background: rgba(13, 18, 32, 0.92);
+  background: rgba(13, 18, 32, 0.9);
   border: 1px solid rgba(6, 182, 212, 0.35);
   box-shadow: 0 0 25px rgba(6, 182, 212, 0.2);
   backdrop-filter: blur(12px);
@@ -25,6 +25,7 @@ body {
   transform: translateY(-1px);
 }
 
+/* Animasi Jaringan Global Berputar */
 @keyframes rotateGlobal {
   0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
   50% { transform: translate(-50%, -50%) rotate(180deg) scale(1.06); }
